@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Swarm · Applicant Tracker</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-subtle: #fafafa;
+    --fg: #000000;
+    --fg-muted: #666666;
+    --fg-faint: #888888;
+    --border: #eaeaea;
+    --border-strong: #d4d4d4;
+    --accent: #0070f3;
+    --accent-soft: #e8f1ff;
+    --hover: #f5f5f5;
+    --radius: 8px;
+    --shadow: 0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+    --shadow-lg: 0 8px 30px rgba(0,0,0,0.12);
+    --green-bg:#e7f8ee; --green-fg:#0a7a3d;
+    --blue-bg:#e8f1ff; --blue-fg:#0058cc;
+    --amber-bg:#fff4e0; --amber-fg:#a85c00;
+    --purple-bg:#f1ebff; --purple-fg:#6429cc;
+    --red-bg:#ffeceb; --red-fg:#c0271a;
+    --gray-bg:#f1f1f1; --gray-fg:#555555;
+  }
+  [data-theme="dark"] {
+    --bg: #000000;
+    --bg-subtle: #0a0a0a;
+    --fg: #ededed;
+    --fg-muted: #a1a1a1;
+    --fg-faint: #777777;
+    --border: #1f1f1f;
+    --border-strong: #333333;
+    --accent: #3a8dff;
+    --accent-soft: #11233f;
+    --hover: #111111;
+    --shadow: 0 2px 8px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.5);
+    --shadow-lg: 0 8px 30px rgba(0,0,0,0.6);
+    --green-bg:#0c2b1a; --green-fg:#4ade80;
+    --blue-bg:#0d2440; --blue-fg:#6aa8ff;
+    --amber-bg:#2e1f05; --amber-fg:#f5b35a;
+    --purple-bg:#1e1336; --purple-fg:#b794f6;
+    --red-bg:#2e1110; --red-fg:#ff6f63;
+    --gray-bg:#1a1a1a; --gray-fg:#999999;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .mono { font-family: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace; }
+
+  header {
+    position: sticky; top: 0; z-index: 20;
+    display: flex; align-items: center; gap: 16px;
+    padding: 0 24px; height: 60px;
+    background: color-mix(in srgb, var(--bg) 80%, transparent);
+    backdrop-filter: saturate(180%) blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: -0.01em; }
+  .logo { width: 26px; height: 26px; }
+  .brand-sub { color: var(--fg-faint); font-weight: 400; padding-left: 10px; margin-left: 4px; border-left: 1px solid var(--border-strong); }
+  .spacer { flex: 1; }
+  .icon-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 34px; height: 34px; border: 1px solid var(--border);
+    background: var(--bg); color: var(--fg-muted); border-radius: var(--radius);
+    cursor: pointer; transition: all 0.15s ease;
+  }
+  .icon-btn:hover { background: var(--hover); color: var(--fg); border-color: var(--border-strong); }
+
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 32px 24px 80px; }
+
+  .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+  .page-head h1 { font-size: 26px; font-weight: 600; letter-spacing: -0.02em; }
+  .page-head p { color: var(--fg-muted); margin-top: 4px; }
+
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .stat { border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; background: var(--bg-subtle); }
+  .stat .num { font-size: 24px; font-weight: 600; letter-spacing: -0.02em; }
+  .stat .lbl { color: var(--fg-faint); font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 2px; }
+
+  .toolbar { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+  .search {
+    flex: 1; min-width: 220px; display: flex; align-items: center; gap: 8px;
+    border: 1px solid var(--border); border-radius: var(--radius); padding: 0 12px; height: 38px;
+    background: var(--bg); transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .search:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .search input { border: none; outline: none; background: transparent; color: var(--fg); flex: 1; font-size: 14px; }
+  .search svg { color: var(--fg-faint); flex-shrink: 0; }
+  select.filter {
+    height: 38px; border: 1px solid var(--border); border-radius: var(--radius);
+    background: var(--bg); color: var(--fg); padding: 0 12px; font-size: 14px; cursor: pointer;
+  }
+  select.filter:focus { outline: none; border-color: var(--accent); }
+
+  .table { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--bg); box-shadow: var(--shadow); }
+  .row {
+    display: grid; grid-template-columns: 1.15fr 1.4fr 168px 108px; align-items: center;
+    gap: 14px; padding: 14px 18px; border-bottom: 1px solid var(--border);
+    cursor: pointer; transition: background 0.12s ease;
+  }
+  .portfolio-link {
+    display: inline-flex; align-items: center; gap: 7px; max-width: 100%;
+    padding: 5px 11px; border: 1px solid var(--border-strong); border-radius: 100px;
+    background: var(--bg); color: var(--fg); font-size: 12.5px; font-weight: 500;
+    text-decoration: none; transition: all 0.12s ease;
+  }
+  .portfolio-link:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+  .portfolio-link svg { flex-shrink: 0; }
+  .portfolio-link .pl-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .portfolio-empty { color: var(--fg-faint); font-size: 12.5px; }
+  .row:last-child { border-bottom: none; }
+  .row:hover { background: var(--hover); }
+  .row.head { background: var(--bg-subtle); cursor: default; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--fg-faint); font-weight: 500; }
+  .row.head:hover { background: var(--bg-subtle); }
+  .cand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .avatar {
+    width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600; font-size: 13px; color: #fff;
+  }
+  .cand-info { min-width: 0; }
+  .cand-name { font-weight: 550; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 7px; }
+  .ivy-tag {
+    flex-shrink: 0; font-size: 10px; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase;
+    padding: 2px 7px; border-radius: 100px; line-height: 1.4;
+    background: linear-gradient(135deg, #f7e7b4, #e9c46a); color: #5c4708; border: 1px solid #e0b94e;
+  }
+  [data-theme="dark"] .ivy-tag { background: linear-gradient(135deg, #3a2f12, #4a3a14); color: #f0cf7a; border-color: #5c4708; }
+  .cand-email { color: var(--fg-faint); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .col-muted { color: var(--fg-muted); font-size: 13px; }
+  .col-highlight {
+    color: var(--fg-muted); font-size: 13px; line-height: 1.4;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .col-highlight b { color: var(--fg); font-weight: 600; }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px;
+    border-radius: 100px; font-size: 12px; font-weight: 500; white-space: nowrap;
+  }
+  .badge .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .s-new { background: var(--gray-bg); color: var(--gray-fg); }
+  .s-reviewing { background: var(--blue-bg); color: var(--blue-fg); }
+  .s-contacted { background: var(--purple-bg); color: var(--purple-fg); }
+  .s-interview { background: var(--amber-bg); color: var(--amber-fg); }
+  .s-offer { background: var(--green-bg); color: var(--green-fg); }
+  .s-rejected { background: var(--red-bg); color: var(--red-fg); }
+
+  .empty { padding: 60px 20px; text-align: center; color: var(--fg-faint); }
+
+  /* Modal popover (Stripe bento style) */
+  .overlay { position: fixed; inset: 0; background: rgba(10,10,12,0.55); backdrop-filter: saturate(120%) blur(6px); opacity: 0; pointer-events: none; transition: opacity 0.22s ease; z-index: 30; }
+  .overlay.open { opacity: 1; pointer-events: auto; }
+  .drawer {
+    position: fixed; top: 50%; left: 50%; width: 720px; max-width: 94vw; max-height: 88vh;
+    background: var(--bg); border: 1px solid var(--border); border-radius: 18px; box-shadow: var(--shadow-lg);
+    transform: translate(-50%, -48%) scale(0.94); opacity: 0; pointer-events: none;
+    transition: transform 0.26s cubic-bezier(.16,1,.3,1), opacity 0.2s ease;
+    z-index: 31; display: flex; flex-direction: column; overflow: hidden;
+  }
+  .drawer.open { transform: translate(-50%, -50%) scale(1); opacity: 1; pointer-events: auto; }
+  .drawer-head { padding: 22px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; gap: 14px; background: var(--bg-subtle); }
+  .drawer-body { padding: 24px; overflow-y: auto; flex: 1; }
+  @media (max-width: 560px) {
+    .drawer { max-height: 92vh; border-radius: 14px; }
+    .meta-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Email thread */
+  .thread { display: flex; flex-direction: column; gap: 12px; }
+  .msg { border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; background: var(--bg-subtle); }
+  .msg.out { background: var(--accent-soft); border-color: transparent; }
+  .msg-head { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; font-size: 12px; flex-wrap: wrap; }
+  .msg-from { font-weight: 600; color: var(--fg); }
+  .msg-dir { font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; padding: 1px 7px; border-radius: 100px; font-weight: 600; }
+  .msg-dir.in { background: var(--gray-bg); color: var(--gray-fg); }
+  .msg-dir.out { background: var(--green-bg); color: var(--green-fg); }
+  .msg-date { color: var(--fg-faint); margin-left: auto; }
+  .msg-body { font-size: 13px; color: var(--fg-muted); line-height: 1.62; white-space: pre-wrap; word-break: break-word; }
+  .drawer-name { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
+  .drawer-email { color: var(--fg-faint); font-size: 13px; }
+  .section-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--fg-faint); margin: 22px 0 8px; font-weight: 600; }
+  .section-label:first-child { margin-top: 0; }
+  .pitch { color: var(--fg-muted); font-size: 13.5px; line-height: 1.65; white-space: pre-wrap; }
+  .link-list { display: flex; flex-direction: column; gap: 8px; }
+  .link-item {
+    display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+    border: 1px solid var(--border); border-radius: var(--radius); color: var(--fg);
+    text-decoration: none; font-size: 13px; transition: all 0.12s ease; cursor: pointer;
+    background: var(--bg); width: 100%; text-align: left; font-family: inherit;
+  }
+  .link-item:hover { border-color: var(--border-strong); background: var(--hover); }
+  .link-item svg { color: var(--fg-faint); flex-shrink: 0; }
+  .link-item .lt { font-weight: 500; }
+  .link-item .lu { color: var(--fg-faint); font-size: 12px; margin-left: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
+  .link-item .expand { color: var(--fg-faint); margin-left: 6px; flex-shrink: 0; }
+  .status-picker { display: flex; flex-wrap: wrap; gap: 8px; }
+  .status-opt {
+    padding: 5px 12px; border-radius: 100px; font-size: 12px; font-weight: 500;
+    border: 1px solid var(--border); background: var(--bg); color: var(--fg-muted); cursor: pointer; transition: all 0.12s ease;
+  }
+  .status-opt:hover { border-color: var(--border-strong); color: var(--fg); }
+  .status-opt.active { border-color: transparent; }
+  .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .meta-grid .k { font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--fg-faint); }
+  .meta-grid .v { font-size: 13.5px; margin-top: 2px; }
+  .tag-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag { font-size: 12px; padding: 2px 9px; border-radius: 6px; background: var(--bg-subtle); border: 1px solid var(--border); color: var(--fg-muted); }
+
+  /* Fullscreen viewer */
+  .viewer { position: fixed; inset: 0; z-index: 50; background: var(--bg); display: none; flex-direction: column; }
+  .viewer.open { display: flex; }
+  .viewer-bar {
+    height: 52px; flex-shrink: 0; display: flex; align-items: center; gap: 12px;
+    padding: 0 16px; border-bottom: 1px solid var(--border); background: var(--bg-subtle);
+  }
+  .viewer-title { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .viewer-sub { color: var(--fg-faint); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .viewer-meta { min-width: 0; flex: 1; }
+  .viewer-actions { display: flex; gap: 8px; flex-shrink: 0; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 7px; height: 34px; padding: 0 14px;
+    border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg);
+    color: var(--fg); font-size: 13px; font-weight: 500; cursor: pointer; text-decoration: none;
+    transition: all 0.12s ease; font-family: inherit;
+  }
+  .btn:hover { background: var(--hover); border-color: var(--border-strong); }
+  .btn-primary { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+  .btn-primary:hover { opacity: 0.85; background: var(--fg); }
+  .viewer-stage { flex: 1; position: relative; background: var(--bg-subtle); overflow: auto; }
+  .viewer-stage iframe { width: 100%; height: 100%; border: none; background: #fff; }
+  /* Screenshot preview (used when a site blocks embedding) */
+  .viewer-shot { position: absolute; inset: 0; display: none; flex-direction: column; align-items: center; overflow: auto; padding: 0; }
+  .viewer-shot.show { display: flex; }
+  .viewer-shot .shot-note {
+    position: sticky; top: 0; width: 100%; z-index: 2; display: flex; align-items: center; gap: 8px;
+    padding: 8px 16px; font-size: 12px; color: var(--fg-muted);
+    background: color-mix(in srgb, var(--bg) 85%, transparent); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+  .viewer-shot .shot-note .live { margin-left: auto; }
+  .viewer-shot img { display: block; width: 100%; max-width: 1200px; height: auto; }
+  .viewer-shot .spin { padding: 60px; color: var(--fg-faint); font-size: 13px; }
+  .viewer-fallback {
+    position: absolute; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center;
+    gap: 14px; text-align: center; padding: 32px; color: var(--fg-muted);
+  }
+  .viewer-fallback.show { display: flex; }
+  .viewer-fallback h3 { color: var(--fg); font-size: 16px; font-weight: 600; }
+  .viewer-fallback p { max-width: 420px; font-size: 13.5px; line-height: 1.6; }
+  .viewer-fallback code { background: var(--bg); border: 1px solid var(--border); padding: 1px 6px; border-radius: 5px; font-size: 12px; }
+  .spinner { width: 18px; height: 18px; border: 2px solid var(--border-strong); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  footer { text-align: center; color: var(--fg-faint); font-size: 12px; padding: 24px; }
+  footer a { color: var(--fg-muted); }
+
+  @media (max-width: 860px) {
+    .row { grid-template-columns: 1fr 150px 96px; }
+    .row .col-highlight, .row.head .col-highlight-h { display: none; }
+    .viewer-sub { display: none; }
+  }
+  @media (max-width: 560px) {
+    .row { grid-template-columns: 1fr 96px; }
+    .row .col-portfolio, .row.head .col-portfolio-h { display: none; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <svg class="logo" viewBox="0 0 76 65" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M37.5274 0L75.0548 65H0L37.5274 0Z" fill="currentColor"/></svg>
+    <span>Swarm</span>
+    <span class="brand-sub">Applicant Tracker</span>
+  </div>
+  <div class="spacer"></div>
+  <button class="icon-btn" id="themeBtn" title="Toggle theme" aria-label="Toggle theme">
+    <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
+  </button>
+</header>
+
+<div class="wrap">
+  <div class="page-head">
+    <div>
+      <h1>Software Engineering Intern</h1>
+      <p>Candidates labeled <span class="mono">Applicants</span> · Makati, Philippines</p>
+    </div>
+  </div>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="toolbar">
+    <label class="search">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" id="search" placeholder="Search name, email, school, skills…" />
+    </label>
+    <select class="filter" id="statusFilter">
+      <option value="">All statuses</option>
+      <option value="New">New</option>
+      <option value="Reviewing">Reviewing</option>
+      <option value="Contacted">Contacted</option>
+      <option value="Interview">Interview</option>
+      <option value="Offer">Offer</option>
+      <option value="Rejected">Rejected</option>
+    </select>
+    <select class="filter" id="sortBy">
+      <option value="recent">Newest first</option>
+      <option value="oldest">Oldest first</option>
+      <option value="name">Name A–Z</option>
+    </select>
+  </div>
+
+  <div class="table" id="table">
+    <div class="row head">
+      <div>Candidate</div>
+      <div class="col-highlight-h">Main selling point</div>
+      <div class="col-portfolio-h">Portfolio</div>
+      <div>Status</div>
+    </div>
+    <div id="rows"></div>
+  </div>
+  <div class="empty" id="empty" style="display:none;">No candidates match your filters.</div>
+</div>
+
+<footer>
+  Synced from Gmail · 6 applicants · Built for <a href="https://swarm.work" target="_blank" rel="noopener">Swarm</a>
+</footer>
+
+<div class="overlay" id="overlay"></div>
+<aside class="drawer" id="drawer" aria-hidden="true"></aside>
+
+<!-- Fullscreen viewer -->
+<div class="viewer" id="viewer" aria-hidden="true">
+  <div class="viewer-bar">
+    <button class="icon-btn" id="viewerClose" aria-label="Close viewer" title="Close (Esc)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div class="viewer-meta">
+      <div class="viewer-title" id="viewerTitle"></div>
+      <div class="viewer-sub" id="viewerSub"></div>
+    </div>
+    <div class="viewer-actions">
+      <a class="btn" id="viewerOpen" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+        Open in new tab
+      </a>
+    </div>
+  </div>
+  <div class="viewer-stage">
+    <iframe id="viewerFrame" referrerpolicy="no-referrer"></iframe>
+    <div class="viewer-shot" id="viewerShot">
+      <div class="shot-note">
+        <span class="spinner" id="shotSpin"></span>
+        <span id="shotLabel">Live preview blocked — showing a full-page screenshot</span>
+        <a class="btn live" id="shotOpen" target="_blank" rel="noopener" style="height:28px;padding:0 10px;">Open live ↗</a>
+      </div>
+      <img id="shotImg" alt="Page screenshot" />
+      <div class="spin" id="shotLoading">Capturing screenshot…</div>
+    </div>
+    <div class="viewer-fallback" id="viewerFallback">
+      <h3 id="fbTitle">Can't display here</h3>
+      <p id="fbMsg"></p>
+      <a class="btn btn-primary" id="fbOpen" target="_blank" rel="noopener">Open in new tab</a>
+    </div>
+  </div>
+</div>
+
+<script>
+const CANDIDATES = [
+  {
+    id: "rolan",
+    name: "Rolan Jero Pinton",
+    email: "rolanjerorarelapinton@gmail.com",
+    applied: "2026-06-13T18:16:17Z",
+    status: "New",
+    highlight: "<b>Shipped 2 AI-built projects</b> and names the exact tools used on each",
+    school: "Software Engineering grad",
+    role: "Hackathon & full-stack builder",
+    aiTools: ["Codex", "Claude Code", "GitHub Copilot"],
+    pitch: "Submitted two project links built with AI agents. Mayari — an AI voice patient-intake system for Philippine clinics (hackathon), and a campaign-drive admin dashboard for his university. Transparent about which AI tools he used on each build.",
+    resumeFile: "RESUME-ROLAN JERO PINTON.pdf",
+    thread: [
+      { from: "Rolan Jero Pinton", dir: "in", date: "Jun 13, 2026", body: `• LinkedIn: Rolan Jero Pinton
+• Resume: Attached — RESUME-ROLAN JERO PINTON.pdf
+• Portfolio / project links:
+
+(Hackathon) Mayari — AI Voice Patient Intake for Philippine Clinics
+https://agora-mayari-frontend.vercel.app/triage
+Used Codex and Claude Code when building this.
+
+(Softeng Project) CCED Admin Dashboard
+https://cced-admin-web.netlify.app/ — Admin dashboard for our university campaign drives.
+Used GitHub Copilot and Codex when building this.` }
+    ],
+    links: [
+      { type: "LinkedIn", url: "https://www.linkedin.com/in/rolan-jero-pinton-3aa046391/" },
+      { type: "Project — Mayari", url: "https://agora-mayari-frontend.vercel.app/triage" },
+      { type: "Project — CCED Dashboard", url: "https://cced-admin-web.netlify.app/" }
+    ]
+  },
+  {
+    id: "sean",
+    name: "Sean Fernandez",
+    email: "fernandez.sean.marino@gmail.com",
+    applied: "2026-06-13T17:59:20Z",
+    status: "Reviewing",
+    highlight: "<b>Best 'what broke & why' story</b> — overrode the AI's boilerplate on purpose",
+    school: "Backend / desktop engineer",
+    role: "Pharmacare PMS (Electron)",
+    aiTools: ["AI agents", "Arch Linux"],
+    pitch: "Led the migration of \"Pharmacare PMS\" from web to an Electron desktop app (Node.js, MongoDB Atlas). Wrote thoughtfully about what broke — local-to-cloud connectivity and async state — and why he overrode the AI's boilerplate IPC suggestions to fit offline-sync constraints. Frames AI as a collaborator, not a replacement for architectural intuition.",
+    resumeFile: "Resume - Sean Fernandez.pdf",
+    thread: [
+      { from: "Sean Fernandez", dir: "in", date: "Jun 13, 2026", body: `Hi Mr. Alexis,
+
+When I read your job description, your perspective on AI in development really resonated with me. I completely agree that the modern developer's toolkit has fundamentally changed. I don't use AI to blindly write my code; I use it to accelerate my problem-solving, test edge cases, and act as a sounding board for complex backend logic.
+
+You mentioned wanting to see how a project evolved, what broke, and the thinking behind the decisions. Recently, I led the transition of a system called "Pharmacare PMS" from a web-based platform to a desktop application using Electron, Node.js, and MongoDB Atlas.
+
+During the migration, the connectivity between the local Electron environment and the cloud-based MongoDB clusters broke constantly. The state management and async data fetching were a mess. I used AI agents heavily during this phase to help parse trace logs and model different architectural approaches. However, the AI often suggested boilerplate solutions that didn't fit our specific offline-sync constraints. The final judgment call on how to structure the local IPC (Inter-Process Communication) and handle data persistence was mine. It reinforced my belief that AI is a powerful collaborator, not a replacement for architectural intuition.
+
+I know a resume only tells a fraction of the story. Whether I'm managing system integrations for school projects like "Guard Side + QR TextSundo," optimizing my Arch Linux dev environment, or figuring out new APIs at local tech events, my primary focus is always on learning velocity.
+
+I'd love the opportunity to walk you through my code and discuss how I approach problem-solving in more detail.
+
+LinkedIn: https://www.linkedin.com/in/seanizonfire
+Portfolio: https://sean-still-shine.vercel.app
+
+Best regards,
+Sean M. Fernandez` }
+    ],
+    links: [
+      { type: "LinkedIn", url: "https://www.linkedin.com/in/seanizonfire" },
+      { type: "Portfolio", url: "https://sean-still-shine.vercel.app/minimal" }
+    ]
+  },
+  {
+    id: "pauline",
+    name: "Pauline Ongchan",
+    email: "paulineaudreyongchan@gmail.com",
+    applied: "2026-06-12T08:36:32Z",
+    status: "Reviewing",
+    highlight: "<b>Current RBC SWE intern</b>; uses AI to pressure-test thinking, not just generate",
+    school: "UBC · Business & Computer Science (3rd yr)",
+    role: "Software Developer Intern @ RBC",
+    aiTools: ["AI as thinking partner"],
+    pitch: "Currently a SWE intern at RBC building internal dashboards and workflow automation for non-technical stakeholders. Because of enterprise AI restrictions, she leans on AI to reason through tradeoffs and pressure-test assumptions rather than to generate code faster. Grew up in Manila; drawn to building for the SEA startup ecosystem.",
+    resumeFile: "Pauline__Swarm_resume.pdf",
+    thread: [
+      { from: "Pauline Ongchan", dir: "in", date: "Jun 12, 2026", body: `Hi Aaron and Alexis,
+
+I'm Pauline, a third-year Business and Computer Science student at UBC, and I'd love to be considered for the Software Engineering Intern position at Swarm. I grew up in Manila before studying in Singapore and now Canada, and I've become increasingly interested in the startup ecosystems developing across Southeast Asia. The chance to contribute to a Philippine startup while continuing to learn from strong builders is especially meaningful to me.
+
+I probably use AI a bit differently from many developers today. While I do use it for coding assistance, I've found the biggest value comes from using it as a thinking partner. I often use AI to explore different approaches, pressure-test assumptions, and understand tradeoffs before I start building. What interests me most is not generating code faster, but learning faster and pushing beyond what I would have been able to build on my own.
+
+Currently, I'm a Software Developer Intern at RBC, building internal dashboards and workflow automation tools used by non-technical stakeholders. Because of enterprise restrictions, I often can't simply rely on the latest AI coding tools directly. Instead, I've had to think carefully about stakeholder needs, workflow design, and maintainability.
+
+What excites me about Swarm is the opportunity to work on real software with real constraints while learning from a team that embraces AI as part of the development process.
+
+LinkedIn: https://www.linkedin.com/in/pauline-ongchan/
+Portfolio: https://paulineongchan.vercel.app/
+
+Best,
+Pauline Ongchan` }
+    ],
+    links: [
+      { type: "LinkedIn", url: "https://www.linkedin.com/in/pauline-ongchan/" },
+      { type: "Portfolio", url: "https://paulineongchan.vercel.app/" }
+    ]
+  },
+  {
+    id: "carl",
+    name: "Carl Joshua Coloma",
+    email: "carljoshuamcoloma@gmail.com",
+    applied: "2026-06-12T05:23:33Z",
+    status: "Reviewing",
+    highlight: "<b>AI QA intern</b> — literally paid to judge when AI output is good or bad",
+    school: "FEU Institute of Technology · CS (SE)",
+    role: "AI QA Intern",
+    aiTools: ["ChatGPT", "Claude", "Cursor"],
+    pitch: "Recent CS grad specializing in Software Engineering. As an AI QA Intern he evaluated chatbot systems for response quality, reasoning, instruction-following, and edge cases — directly relevant to judging when AI output is good, bad, or incomplete.",
+    resumeFile: "Carl Joshua Coloma - CV.pdf",
+    thread: [
+      { from: "Carl Joshua Coloma", dir: "in", date: "Jun 12, 2026", body: `Good day!
+
+I came across your LinkedIn post about the Software Engineering Intern opportunity at Swarm and was excited by your perspective on AI-assisted software development. As a recent Computer Science graduate specializing in Software Engineering from FEU Institute of Technology, I have built AI-powered applications, automation workflows, and full-stack projects while leveraging AI tools such as ChatGPT, Claude, and Cursor to accelerate development and learning.
+
+Most recently, as an AI QA Intern, I evaluated chatbot systems for response quality, reasoning, instruction-following, and edge cases. This experience strengthened my ability to assess AI-generated output critically and improve system performance. I am eager to contribute, learn from experienced builders, and further develop my software engineering and AI skills at Swarm.
+
+LinkedIn: https://www.linkedin.com/in/carl-joshua-coloma/
+GitHub: https://github.com/cdobby18
+Portfolio: https://carlcoloma.vercel.app/
+
+Best regards,
+Carl Joshua M. Coloma` }
+    ],
+    links: [
+      { type: "LinkedIn", url: "https://www.linkedin.com/in/carl-joshua-coloma/" },
+      { type: "GitHub", url: "https://github.com/cdobby18" },
+      { type: "Portfolio", url: "https://carlcoloma.vercel.app/" }
+    ]
+  },
+  {
+    id: "daniel",
+    name: "Daniel Jan Medado",
+    email: "danmedado04@gmail.com",
+    applied: "2026-06-12T01:31:00Z",
+    status: "Reviewing",
+    highlight: "<b>Builds & maintains a real full-stack app</b> in daily use by his family's business",
+    school: "Ateneo de Manila · MIS (graduating)",
+    role: "Digital Transformation Intern @ KPMG",
+    aiTools: ["AI-amplified debugging"],
+    pitch: "Built and still maintains a full-stack Car Repair Center Management System (React, TypeScript, Supabase) for his family's franchise. Interned at KPMG PH on Angular/Lumen internal tooling for a major client — sat in client meetings and scoped requirements. Leadership roles across two university orgs.",
+    resumeFile: "MedadoDaniel_Resume_2026 (1).pdf",
+    thread: [
+      { from: "Daniel Jan Medado", dir: "in", date: "Jun 12, 2026", body: `Hi Aaron and Alexis,
+
+I'm Daniel, a graduating BS Management Information Systems student at Ateneo de Manila University. I'm applying for the Software Engineering Intern role at Swarm.
+
+I've always been the person in the room people turn to when something tech-related breaks. That came from being curiously and stubbornly determined to figure things out and make something work.
+
+AI has amplified that. The reason I'm effective with it is because I know what to look for, what to ask, and what to change. I understand enough of the core to catch when it's wrong and push it toward something better. That's how I built, maintain, and continually improve a full-stack Car Repair Center Management System in React, TypeScript, and Supabase for the daily operations of my parents' Car Care Center franchise.
+
+Most recently, I interned at KPMG Philippines on their Digital Transformation team, contributing to both frontend (Angular) and backend (Lumen) development of an internal system for a major client. I sat in client meetings, helped scope requirements, and bridged communication between the dev team and stakeholders.
+
+Attached is my resume. You can also see more about me at itsbydan.com.
+
+Best,
+Daniel Jan P. Medado` }
+    ],
+    links: [
+      { type: "LinkedIn / Portfolio", url: "https://itsbydan.com" }
+    ]
+  },
+  {
+    id: "john",
+    name: "John Yumul",
+    email: "johnyumul.ph@gmail.com",
+    applied: "2026-06-11T15:18:28Z",
+    status: "Contacted",
+    highlight: "<b>Already on Alexis's radar</b> from his Qwen meetup talk; flagged for next steps",
+    school: "CS grad · design/product background",
+    role: "Startup experience",
+    aiTools: ["AI transformation focus"],
+    pitch: "Fresh CS grad with startup and design/product experience, recently shifting toward AI and more technical work. Alexis already replied — recognized him from his talk at the Qwen meetup and flagged him for next steps next week.",
+    note: "Alexis replied Jun 11: \"I remember you from your talk at the Qwen meetup. Aaron and I will reach out next week for next steps.\"",
+    resumeFile: "John_Yumul_Resume.pdf",
+    thread: [
+      { from: "John Yumul", dir: "in", date: "Jun 11, 2026 · 11:18 PM", body: `Hello,
+
+I'm a fresh grad CS major with startup experience and a design/product background, but I've recently shifted my focus to AI and more technical work. At this stage of my career, I'm interested in doing AI transformation at the scale Swarm operates and stretching my mind to the demands of building real systems.
+
+You can view my stuff here:
+johnyumul.com
+linkedin.com/in/yumuljohn/
+
+Best regards,
+John Yumul` },
+      { from: "Alexis Collado", dir: "out", date: "Jun 11, 2026 · 11:55 PM", body: `Hey John,
+
+Thanks for applying! I remember you from your talk at the Qwen meetup. Aaron and I will reach out next week for next steps.
+
+Best,
+Alexis` }
+    ],
+    links: [
+      { type: "Portfolio", url: "https://johnyumul.com" },
+      { type: "LinkedIn", url: "https://linkedin.com/in/yumuljohn/" }
+    ]
+  }
+];
+
+const RESUME_DIR = "resumes/"; // drop the 6 PDF attachments here, next to this HTML file
+// Route Gmail deep-links by account email (works regardless of which u/N slot you're in).
+const GMAIL_USER = "alexis@swarm.work";
+const THREADS = {
+  rolan: "19ec23310a25c9b8",
+  sean: "19ec22399149e8b3",
+  pauline: "19ebaf9fd9c61e72",
+  carl: "19eba494db664ce8",
+  daniel: "19eb9753c976585a",
+  john: "19eb74529d4844f6"
+};
+function gmailUrl(id) { return `https://mail.google.com/mail/?authuser=${encodeURIComponent(GMAIL_USER)}#all/${THREADS[id]}`; }
+const STATUSES = ["New", "Reviewing", "Contacted", "Interview", "Offer", "Rejected"];
+const STATUS_CLASS = { New:"s-new", Reviewing:"s-reviewing", Contacted:"s-contacted", Interview:"s-interview", Offer:"s-offer", Rejected:"s-rejected" };
+const AVATAR_COLORS = ["#0070f3","#7928ca","#f5a623","#e00","#50e3c2","#ff0080","#0a7a3d","#6429cc"];
+
+const STORE_KEY = "swarm_ats_status_v1";
+function loadStatuses() { try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch { return {}; } }
+function saveStatus(id, status) { const s = loadStatuses(); s[id] = status; localStorage.setItem(STORE_KEY, JSON.stringify(s)); }
+const overrides = loadStatuses();
+CANDIDATES.forEach(c => { if (overrides[c.id]) c.status = overrides[c.id]; });
+
+function initials(name) { return name.split(" ").map(w => w[0]).slice(0,2).join("").toUpperCase(); }
+function colorFor(id) { let h=0; for (const ch of id) h = (h*31 + ch.charCodeAt(0)) >>> 0; return AVATAR_COLORS[h % AVATAR_COLORS.length]; }
+function timeAgo(iso) {
+  const d = new Date(iso), now = new Date();
+  const days = Math.floor((now - d) / 86400000);
+  if (days <= 0) return "Today";
+  if (days === 1) return "Yesterday";
+  if (days < 7) return days + " days ago";
+  return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+}
+function domain(url) { try { return new URL(url).hostname.replace(/^www\./, ""); } catch { return url; } }
+function isIvy(school) {
+  if (!school) return false;
+  const s = school.toLowerCase();
+  return ["ateneo","dlsu","de la salle","ubc","university of british columbia"].some(k => s.includes(k));
+}
+function primaryPortfolio(c) {
+  if (!c.links || !c.links.length) return null;
+  return c.links.find(l => /portfolio/i.test(l.type))
+      || c.links.find(l => /project|website|site/i.test(l.type))
+      || c.links.find(l => !/linkedin|github/i.test(l.type))
+      || c.links[0];
+}
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m])); }
+function encPath(p) { return p.split("/").map(encodeURIComponent).join("/"); }
+
+const rowsEl = document.getElementById("rows");
+const emptyEl = document.getElementById("empty");
+const searchEl = document.getElementById("search");
+const statusFilterEl = document.getElementById("statusFilter");
+const sortByEl = document.getElementById("sortBy");
+
+function renderStats() {
+  const total = CANDIDATES.length;
+  const active = CANDIDATES.filter(c => c.status !== "Rejected").length;
+  const contacted = CANDIDATES.filter(c => ["Contacted","Interview","Offer"].includes(c.status)).length;
+  const newCount = CANDIDATES.filter(c => c.status === "New").length;
+  const stats = [
+    { num: total, lbl: "Total applicants" },
+    { num: newCount, lbl: "Needs review" },
+    { num: contacted, lbl: "In conversation" },
+    { num: active, lbl: "Still active" }
+  ];
+  document.getElementById("stats").innerHTML = stats.map(s =>
+    `<div class="stat"><div class="num">${s.num}</div><div class="lbl">${s.lbl}</div></div>`).join("");
+}
+
+function badge(status) { return `<span class="badge ${STATUS_CLASS[status]}"><span class="dot"></span>${status}</span>`; }
+function portfolioCell(c) {
+  const p = primaryPortfolio(c);
+  if (!p) return `<span class="portfolio-empty">—</span>`;
+  const globe = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`;
+  const arrow = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:.6"><path d="M7 17 17 7M7 7h10v10"/></svg>`;
+  return `<a class="portfolio-link" href="${p.url}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="${escapeHtml(p.url)}">${globe}<span class="pl-text">${escapeHtml(domain(p.url))}</span>${arrow}</a>`;
+}
+
+function render() {
+  const q = searchEl.value.trim().toLowerCase();
+  const sf = statusFilterEl.value;
+  let list = CANDIDATES.filter(c => {
+    if (sf && c.status !== sf) return false;
+    if (!q) return true;
+    return [c.name, c.email, c.school, c.role, c.pitch, (c.aiTools||[]).join(" ")].join(" ").toLowerCase().includes(q);
+  });
+  const sort = sortByEl.value;
+  list.sort((a,b) => {
+    if (sort === "name") return a.name.localeCompare(b.name);
+    if (sort === "oldest") return new Date(a.applied) - new Date(b.applied);
+    return new Date(b.applied) - new Date(a.applied);
+  });
+
+  emptyEl.style.display = list.length ? "none" : "block";
+  rowsEl.innerHTML = list.map(c => `
+    <div class="row" data-id="${c.id}">
+      <div class="cand">
+        <div class="avatar" style="background:${colorFor(c.id)}">${initials(c.name)}</div>
+        <div class="cand-info">
+          <div class="cand-name">${escapeHtml(c.name)}${isIvy(c.school) ? '<span class="ivy-tag" title="'+escapeHtml(c.school)+'">Ivy League</span>' : ''}</div>
+          <div class="cand-email">${escapeHtml(c.email)}</div>
+        </div>
+      </div>
+      <div class="col-highlight">${c.highlight || escapeHtml(c.role || "—")}</div>
+      <div class="col-portfolio">${portfolioCell(c)}</div>
+      <div>${badge(c.status)}</div>
+    </div>`).join("");
+
+  rowsEl.querySelectorAll(".row").forEach(r =>
+    r.addEventListener("click", () => openDrawer(r.dataset.id)));
+}
+
+const drawer = document.getElementById("drawer");
+const overlay = document.getElementById("overlay");
+
+function openDrawer(id) {
+  const c = CANDIDATES.find(x => x.id === id);
+  if (!c) return;
+  const linkSvg = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>`;
+  const docSvg = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>`;
+  const expandSvg = `<svg class="expand" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>`;
+  const newTabSvg = `<svg class="expand" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>`;
+  const mailSvg = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg>`;
+
+  drawer.innerHTML = `
+    <div class="drawer-head">
+      <div class="avatar" style="background:${colorFor(c.id)};width:44px;height:44px;font-size:16px;">${initials(c.name)}</div>
+      <div style="flex:1;min-width:0;">
+        <div class="drawer-name">${escapeHtml(c.name)}</div>
+        <div class="drawer-email">${escapeHtml(c.email)}</div>
+      </div>
+      <button class="icon-btn" id="closeDrawer" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="drawer-body">
+      <div class="section-label">Status</div>
+      <div class="status-picker" id="statusPicker">
+        ${STATUSES.map(s => `<button class="status-opt ${s===c.status?'active '+STATUS_CLASS[s]:''}" data-status="${s}">${s}</button>`).join("")}
+      </div>
+
+      <div class="section-label">Resume &amp; portfolio</div>
+      <div class="link-list">
+        ${c.resumeFile ? `<a class="link-item" href="${gmailUrl(c.id)}" target="_blank" rel="noopener">${docSvg}<span class="lt">Résumé — open in Gmail</span><span class="lu">${escapeHtml(c.resumeFile)}</span>${newTabSvg}</a>` : ""}
+        ${c.links.map((l) => `<a class="link-item" href="${l.url}" target="_blank" rel="noopener">${linkSvg}<span class="lt">${escapeHtml(l.type)}</span><span class="lu">${escapeHtml(domain(l.url))}</span>${newTabSvg}</a>`).join("")}
+        <a class="link-item" href="${gmailUrl(c.id)}" target="_blank" rel="noopener">${mailSvg}<span class="lt">Open application email</span><span class="lu">Gmail</span>${newTabSvg}</a>
+      </div>
+
+      <div class="section-label">Overview</div>
+      <div class="meta-grid">
+        <div><div class="k">Background</div><div class="v">${escapeHtml(c.school||"—")}</div></div>
+        <div><div class="k">Current / notable</div><div class="v">${escapeHtml(c.role||"—")}</div></div>
+        <div><div class="k">Applied</div><div class="v">${new Date(c.applied).toLocaleDateString(undefined,{month:"long",day:"numeric",year:"numeric"})}</div></div>
+        <div><div class="k">Source</div><div class="v">Gmail · Applicants</div></div>
+      </div>
+
+      ${c.aiTools && c.aiTools.length ? `<div class="section-label">AI tooling mentioned</div><div class="tag-row">${c.aiTools.map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join("")}</div>` : ""}
+
+      <div class="section-label">Summary</div>
+      <div class="pitch">${escapeHtml(c.pitch)}</div>
+
+      ${c.note ? `<div class="section-label">Note</div><div class="pitch" style="color:var(--accent)">${escapeHtml(c.note)}</div>` : ""}
+
+      ${c.thread && c.thread.length ? `<div class="section-label">Email thread · ${c.thread.length} message${c.thread.length>1?"s":""}</div>
+      <div class="thread">
+        ${c.thread.map(m => `<div class="msg ${m.dir}">
+          <div class="msg-head">
+            <span class="msg-from">${escapeHtml(m.from)}</span>
+            <span class="msg-dir ${m.dir}">${m.dir==="out"?"Swarm":"Applicant"}</span>
+            <span class="msg-date">${escapeHtml(m.date)}</span>
+          </div>
+          <div class="msg-body">${escapeHtml(m.body)}</div>
+        </div>`).join("")}
+      </div>
+      <div style="margin-top:12px;"><a class="btn" href="${gmailUrl(c.id)}" target="_blank" rel="noopener" style="display:inline-flex;">${mailSvg}&nbsp;Open full thread in Gmail</a></div>` : ""}
+    </div>`;
+
+  drawer.querySelector("#closeDrawer").addEventListener("click", closeDrawer);
+  drawer.querySelectorAll(".status-opt").forEach(btn =>
+    btn.addEventListener("click", () => {
+      c.status = btn.dataset.status; saveStatus(c.id, c.status);
+      openDrawer(c.id); renderStats(); render();
+    }));
+  drawer.classList.add("open");
+  overlay.classList.add("open");
+  drawer.setAttribute("aria-hidden", "false");
+}
+function closeDrawer() {
+  drawer.classList.remove("open"); overlay.classList.remove("open");
+  drawer.setAttribute("aria-hidden", "true");
+}
+overlay.addEventListener("click", closeDrawer);
+
+/* ---------- Fullscreen viewer ---------- */
+const viewer = document.getElementById("viewer");
+const viewerFrame = document.getElementById("viewerFrame");
+const viewerTitle = document.getElementById("viewerTitle");
+const viewerSub = document.getElementById("viewerSub");
+const viewerOpen = document.getElementById("viewerOpen");
+const viewerFallback = document.getElementById("viewerFallback");
+const viewerShot = document.getElementById("viewerShot");
+const shotImg = document.getElementById("shotImg");
+const shotOpen = document.getElementById("shotOpen");
+const shotSpin = document.getElementById("shotSpin");
+const shotLabel = document.getElementById("shotLabel");
+const shotLoading = document.getElementById("shotLoading");
+const fbTitle = document.getElementById("fbTitle");
+const fbMsg = document.getElementById("fbMsg");
+const fbOpen = document.getElementById("fbOpen");
+let fbTimer = null, currentUrl = null;
+
+function screenshotSrc(url) {
+  // Keyless full-page screenshot service; falls back gracefully if offline.
+  return "https://image.thum.io/get/width/1200/fullpage/noanimate/" + url;
+}
+
+function showScreenshot(url) {
+  currentUrl = url;
+  shotOpen.href = url;
+  shotImg.style.display = "none";
+  shotLoading.style.display = "block";
+  shotSpin.style.display = "inline-block";
+  shotLabel.textContent = "Live preview blocked — capturing a full-page screenshot…";
+  shotImg.onload = () => {
+    shotImg.style.display = "block";
+    shotLoading.style.display = "none";
+    shotSpin.style.display = "none";
+    shotLabel.textContent = "Live preview blocked — showing a full-page screenshot";
+  };
+  shotImg.onerror = () => {
+    // Screenshot service unavailable → plain message fallback.
+    viewerShot.classList.remove("show");
+    fbTitle.textContent = "Can't display here";
+    fbMsg.textContent = "This site blocks embedding and the screenshot preview is unavailable right now. Open it in a new tab instead.";
+    viewerFallback.classList.add("show");
+  };
+  shotImg.src = screenshotSrc(url);
+  viewerShot.classList.add("show");
+}
+
+function openViewer({ title, sub, url, kind }) {
+  viewerTitle.textContent = title;
+  viewerSub.textContent = sub || "";
+  viewerOpen.href = url;
+  fbOpen.href = url;
+  viewerFallback.classList.remove("show");
+  viewerShot.classList.remove("show");
+  shotImg.removeAttribute("src");
+  viewer.classList.add("open");
+  viewer.setAttribute("aria-hidden", "false");
+
+  clearTimeout(fbTimer);
+  viewerFrame.style.display = "block";
+  viewerFrame.src = "about:blank";
+  requestAnimationFrame(() => { viewerFrame.src = url; });
+
+  function blocked() {
+    viewerFrame.style.display = "none";
+    if (kind === "resume") {
+      fbTitle.textContent = "Résumé not found locally";
+      fbMsg.innerHTML = "This résumé is a Gmail attachment. To view it here, drop the PDF into a <code>" + escapeHtml(RESUME_DIR) + "</code> folder next to this file, keeping the exact filename <code>" + escapeHtml(sub) + "</code>.";
+      viewerFallback.classList.add("show");
+    } else {
+      showScreenshot(url); // full-page screenshot instead of a dead end
+    }
+  }
+
+  // Detect a blocked / empty embed.
+  fbTimer = setTimeout(() => {
+    let ok = false;
+    try { ok = !!(viewerFrame.contentDocument && viewerFrame.contentDocument.body && viewerFrame.contentDocument.body.childNodes.length); }
+    catch (e) { ok = true; } // cross-origin = it rendered something
+    if (!ok) blocked();
+  }, 2200);
+  viewerFrame.onload = () => {
+    try {
+      if (viewerFrame.contentDocument && viewerFrame.contentDocument.body && viewerFrame.contentDocument.body.childNodes.length === 0) blocked();
+    } catch (e) { /* cross-origin, assume it loaded fine */ }
+  };
+  viewerFrame.onerror = () => blocked();
+}
+function closeViewer() {
+  clearTimeout(fbTimer);
+  viewer.classList.remove("open");
+  viewer.setAttribute("aria-hidden", "true");
+  viewerFrame.src = "about:blank";
+  shotImg.removeAttribute("src");
+}
+document.getElementById("viewerClose").addEventListener("click", closeViewer);
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") {
+    if (viewer.classList.contains("open")) closeViewer();
+    else closeDrawer();
+  }
+});
+
+/* ---------- Theme ---------- */
+const sun = `<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>`;
+const moon = `<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>`;
+const themeIcon = document.getElementById("themeIcon");
+function applyTheme(t) {
+  document.documentElement.setAttribute("data-theme", t);
+  themeIcon.innerHTML = t === "dark" ? sun : moon;
+  try { localStorage.setItem("swarm_ats_theme", t); } catch {}
+}
+let theme = "light";
+try { theme = localStorage.getItem("swarm_ats_theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); } catch {}
+applyTheme(theme);
+document.getElementById("themeBtn").addEventListener("click", () =>
+  applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark"));
+
+searchEl.addEventListener("input", render);
+statusFilterEl.addEventListener("change", render);
+sortByEl.addEventListener("change", render);
+
+renderStats();
+render();
+</script>
+</body>
+</html>
