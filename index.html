@@ -79,7 +79,7 @@
   }
   .icon-btn:hover { background: var(--hover); color: var(--fg); border-color: var(--border-strong); }
 
-  .wrap { max-width: 1100px; margin: 0 auto; padding: 32px 24px 80px; }
+  .wrap { max-width: none; margin: 0; padding: 32px 32px 80px; }
 
   .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
   .page-head h1 { font-size: 26px; font-weight: 600; letter-spacing: -0.02em; }
@@ -101,14 +101,20 @@
   .search svg { color: var(--fg-faint); flex-shrink: 0; }
   select.filter {
     height: 38px; border: 1px solid var(--border); border-radius: var(--radius);
-    background: var(--bg); color: var(--fg); padding: 0 12px; font-size: 14px; cursor: pointer;
+    background: var(--bg); color: var(--fg); padding: 0 32px 0 12px; font-size: 14px; cursor: pointer;
+    appearance: none; -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 10px center;
   }
-  select.filter:focus { outline: none; border-color: var(--accent); }
+  select.filter:hover { border-color: var(--border-strong); }
+  select.filter:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .toolbar-hint { margin-left: auto; color: var(--fg-faint); font-size: 12.5px; white-space: nowrap; }
+  @media (max-width: 560px) { .toolbar-hint { display: none; } }
 
   .table { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--bg); box-shadow: var(--shadow); }
   .row {
-    display: grid; grid-template-columns: 1.15fr 1.4fr 168px 108px; align-items: center;
-    gap: 14px; padding: 14px 18px; border-bottom: 1px solid var(--border);
+    display: grid; grid-template-columns: 1fr 122px 200px 1fr 166px 110px 108px; align-items: center;
+    gap: 16px; padding: 14px 20px; border-bottom: 1px solid var(--border);
     cursor: pointer; transition: background 0.12s ease;
   }
   .portfolio-link {
@@ -121,10 +127,25 @@
   .portfolio-link svg { flex-shrink: 0; }
   .portfolio-link .pl-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .portfolio-empty { color: var(--fg-faint); font-size: 12.5px; }
+  .role-pill { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 6px; font-size: 11.5px; font-weight: 600; white-space: nowrap; }
+  .role-swe { background: var(--blue-bg); color: var(--blue-fg); }
+  .role-design { background: var(--purple-bg); color: var(--purple-fg); }
   .row:last-child { border-bottom: none; }
   .row:hover { background: var(--hover); }
   .row.head { background: var(--bg-subtle); cursor: default; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--fg-faint); font-weight: 500; }
   .row.head:hover { background: var(--bg-subtle); }
+  /* Sortable header cells (shadcn data-table style) */
+  .th { display: flex; align-items: center; gap: 6px; font: inherit; color: inherit; text-transform: inherit; letter-spacing: inherit; }
+  button.th { background: none; border: none; padding: 4px 6px; margin: -4px -6px; border-radius: 6px; cursor: pointer; text-align: left; }
+  button.th:hover { background: color-mix(in srgb, var(--fg) 7%, transparent); color: var(--fg-muted); }
+  button.th.active { color: var(--fg); }
+  .th .caret { display: inline-flex; width: 13px; height: 13px; flex-shrink: 0; }
+  .th .caret svg { width: 13px; height: 13px; }
+  .th .c-both { opacity: 0.4; }
+  .th .c-dir { display: none; }
+  button.th.active .c-both { display: none; }
+  button.th.active .c-dir { display: inline-flex; opacity: 1; }
+  button.th.active.asc .c-dir { transform: rotate(180deg); }
   .cand { display: flex; align-items: center; gap: 12px; min-width: 0; }
   .avatar {
     width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
@@ -132,13 +153,18 @@
     font-weight: 600; font-size: 13px; color: #fff;
   }
   .cand-info { min-width: 0; }
-  .cand-name { font-weight: 550; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 7px; }
+  .cand-name { display: flex; align-items: center; gap: 6px; min-width: 0; }
+  .cand-name .nm { font-weight: 550; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .ivy-tag, .year-tag {
+    flex-shrink: 0; font-size: 10px; font-weight: 600; line-height: 1.5;
+    padding: 1px 8px; border-radius: 100px; white-space: nowrap;
+  }
   .ivy-tag {
-    flex-shrink: 0; font-size: 10px; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase;
-    padding: 2px 7px; border-radius: 100px; line-height: 1.4;
+    letter-spacing: 0.03em; text-transform: uppercase;
     background: linear-gradient(135deg, #f7e7b4, #e9c46a); color: #5c4708; border: 1px solid #e0b94e;
   }
   [data-theme="dark"] .ivy-tag { background: linear-gradient(135deg, #3a2f12, #4a3a14); color: #f0cf7a; border-color: #5c4708; }
+  .year-tag { background: var(--blue-bg); color: var(--blue-fg); border: 1px solid transparent; }
   .cand-email { color: var(--fg-faint); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .col-muted { color: var(--fg-muted); font-size: 13px; }
   .col-highlight {
@@ -146,6 +172,9 @@
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
   }
   .col-highlight b { color: var(--fg); font-weight: 600; }
+  .edu-name { font-size: 13px; color: var(--fg); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .edu-name.none { color: var(--fg-faint); font-weight: 400; }
+  .edu-badges { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
 
   .badge {
     display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px;
@@ -165,19 +194,69 @@
   .overlay { position: fixed; inset: 0; background: rgba(10,10,12,0.55); backdrop-filter: saturate(120%) blur(6px); opacity: 0; pointer-events: none; transition: opacity 0.22s ease; z-index: 30; }
   .overlay.open { opacity: 1; pointer-events: auto; }
   .drawer {
-    position: fixed; top: 50%; left: 50%; width: 720px; max-width: 94vw; max-height: 88vh;
+    position: fixed; top: 50%; left: 50%; width: 920px; max-width: 94vw; max-height: 88vh;
     background: var(--bg); border: 1px solid var(--border); border-radius: 18px; box-shadow: var(--shadow-lg);
     transform: translate(-50%, -48%) scale(0.94); opacity: 0; pointer-events: none;
     transition: transform 0.26s cubic-bezier(.16,1,.3,1), opacity 0.2s ease;
     z-index: 31; display: flex; flex-direction: column; overflow: hidden;
   }
   .drawer.open { transform: translate(-50%, -50%) scale(1); opacity: 1; pointer-events: auto; }
-  .drawer-head { padding: 22px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; gap: 14px; background: var(--bg-subtle); }
-  .drawer-body { padding: 24px; overflow-y: auto; flex: 1; }
+  .drawer-head { padding: 20px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; gap: 14px; background: var(--bg-subtle); }
+  .avatar-lg { width: 52px; height: 52px; font-size: 18px; }
+  .dh-meta { flex: 1; min-width: 0; }
+  .dh-title { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .dh-name { font-size: 19px; font-weight: 650; letter-spacing: -0.01em; }
+  .dh-sub { color: var(--fg-muted); font-size: 13px; margin-top: 3px; }
+  .dh-email { color: var(--fg-faint); font-size: 12.5px; margin-top: 2px; display: inline-block; text-decoration: none; }
+  .dh-email:hover { color: var(--accent); }
+  .dh-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .dh-actions { display: flex; gap: 8px; padding: 14px 22px; border-bottom: 1px solid var(--border); background: var(--bg); flex-wrap: wrap; }
+  .act {
+    flex: 1 1 0; min-width: 130px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    height: 40px; border: 1px solid var(--border); border-radius: 9px; font-weight: 500; font-size: 13px;
+    cursor: pointer; text-decoration: none; color: var(--fg); background: var(--bg); transition: all 0.12s ease; font-family: inherit;
+  }
+  .act svg { flex-shrink: 0; color: var(--fg-faint); }
+  .act:hover { background: var(--hover); border-color: var(--border-strong); }
+  .act.primary { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+  .act.primary svg { color: var(--bg); }
+  .act.primary:hover { opacity: 0.88; background: var(--fg); }
+  .callout {
+    display: flex; gap: 10px; align-items: flex-start; margin-top: 16px;
+    padding: 12px 14px; border-radius: 10px; background: var(--accent-soft);
+    border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+    color: var(--accent); font-size: 13px; line-height: 1.55;
+  }
+  .callout svg { flex-shrink: 0; margin-top: 2px; color: var(--accent); }
+  .drawer-body { padding: 0; overflow-y: auto; flex: 1; }
+  .modal-cols { display: grid; grid-template-columns: 300px 1fr; align-items: start; }
+  .col-left { padding: 24px; border-right: 1px solid var(--border); background: var(--bg-subtle); }
+  .col-right { padding: 24px; min-width: 0; }
+  .meta-stack { display: flex; flex-direction: column; gap: 12px; }
+  .meta-stack .m .k { font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--fg-faint); }
+  .meta-stack .m .v { font-size: 13.5px; margin-top: 2px; }
+  @media (max-width: 720px) {
+    .modal-cols { grid-template-columns: 1fr; }
+    .col-left { border-right: none; border-bottom: 1px solid var(--border); }
+  }
   @media (max-width: 560px) {
     .drawer { max-height: 92vh; border-radius: 14px; }
     .meta-grid { grid-template-columns: 1fr; }
   }
+
+  /* Password gate */
+  .gate { position: fixed; inset: 0; z-index: 100; background: var(--bg); display: flex; align-items: center; justify-content: center; padding: 24px; transition: opacity 0.25s ease; }
+  .gate-card { width: 100%; max-width: 360px; text-align: center; }
+  .gate-logo { width: 40px; height: 40px; margin: 0 auto 18px; color: var(--fg); display: block; }
+  .gate h1 { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
+  .gate-card > p { color: var(--fg-muted); font-size: 13.5px; margin: 6px 0 22px; }
+  .gate-form { display: flex; flex-direction: column; gap: 10px; }
+  .gate input { height: 44px; border: 1px solid var(--border-strong); border-radius: 9px; background: var(--bg); color: var(--fg); padding: 0 14px; font-size: 14px; text-align: center; }
+  .gate input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .gate button { height: 44px; border: none; border-radius: 9px; background: var(--fg); color: var(--bg); font-size: 14px; font-weight: 600; cursor: pointer; transition: opacity 0.12s ease; }
+  .gate button:hover { opacity: 0.88; }
+  .gate-err { color: var(--red-fg); font-size: 12.5px; min-height: 16px; visibility: hidden; }
+  .gate-err.show { visibility: visible; }
 
   /* Email thread */
   .thread { display: flex; flex-direction: column; gap: 12px; }
@@ -203,6 +282,9 @@
     background: var(--bg); width: 100%; text-align: left; font-family: inherit;
   }
   .link-item:hover { border-color: var(--border-strong); background: var(--hover); }
+  .link-item.primary-link { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); font-weight: 600; }
+  .link-item.primary-link svg { color: var(--accent); }
+  .link-item.primary-link:hover { filter: brightness(0.97); }
   .link-item svg { color: var(--fg-faint); flex-shrink: 0; }
   .link-item .lt { font-weight: 500; }
   .link-item .lu { color: var(--fg-faint); font-size: 12px; margin-left: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
@@ -268,18 +350,40 @@
   footer { text-align: center; color: var(--fg-faint); font-size: 12px; padding: 24px; }
   footer a { color: var(--fg-muted); }
 
-  @media (max-width: 860px) {
-    .row { grid-template-columns: 1fr 150px 96px; }
+  @media (max-width: 1280px) {
+    .row { grid-template-columns: 1fr 122px 200px 166px 110px 108px; }
     .row .col-highlight, .row.head .col-highlight-h { display: none; }
+  }
+  @media (max-width: 1060px) {
+    .row { grid-template-columns: 1fr 122px 200px 110px 108px; }
+    .row .col-portfolio, .row.head .col-portfolio-h { display: none; }
     .viewer-sub { display: none; }
   }
+  @media (max-width: 860px) {
+    .row { grid-template-columns: 1fr 122px 108px; }
+    .row .col-edu, .row.head .col-edu-h { display: none; }
+    .row .col-applied, .row.head .col-applied-h { display: none; }
+  }
   @media (max-width: 560px) {
-    .row { grid-template-columns: 1fr 96px; }
-    .row .col-portfolio, .row.head .col-portfolio-h { display: none; }
+    .row { grid-template-columns: 1fr 104px; }
+    .row .col-role, .row.head .col-role-h { display: none; }
   }
 </style>
 </head>
 <body>
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <svg class="gate-logo" viewBox="0 0 76 65" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M37.5274 0L75.0548 65H0L37.5274 0Z" fill="currentColor"/></svg>
+    <h1>Swarm · Applicant Tracker</h1>
+    <p>This page is protected. Enter the password to continue.</p>
+    <div class="gate-form">
+      <input type="password" id="gateInput" placeholder="Password" autocomplete="current-password" aria-label="Password" />
+      <button id="gateBtn">Unlock</button>
+      <div class="gate-err" id="gateErr">Incorrect password. Try again.</div>
+    </div>
+  </div>
+</div>
+
 <header>
   <div class="brand">
     <svg class="logo" viewBox="0 0 76 65" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M37.5274 0L75.0548 65H0L37.5274 0Z" fill="currentColor"/></svg>
@@ -295,8 +399,8 @@
 <div class="wrap">
   <div class="page-head">
     <div>
-      <h1>Software Engineering Intern</h1>
-      <p>Candidates labeled <span class="mono">Applicants</span> · Makati, Philippines</p>
+      <h1>Internship Applicants</h1>
+      <p>Software Engineering &amp; Design Engineer roles · labeled <span class="mono">Applicants</span> in Gmail · Makati</p>
     </div>
   </div>
 
@@ -307,6 +411,11 @@
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
       <input type="text" id="search" placeholder="Search name, email, school, skills…" />
     </label>
+    <select class="filter" id="roleFilter">
+      <option value="">All roles</option>
+      <option value="Software Engineering Intern">Software Engineering Intern</option>
+      <option value="Design Engineer Intern">Design Engineer Intern</option>
+    </select>
     <select class="filter" id="statusFilter">
       <option value="">All statuses</option>
       <option value="New">New</option>
@@ -316,19 +425,18 @@
       <option value="Offer">Offer</option>
       <option value="Rejected">Rejected</option>
     </select>
-    <select class="filter" id="sortBy">
-      <option value="recent">Newest first</option>
-      <option value="oldest">Oldest first</option>
-      <option value="name">Name A–Z</option>
-    </select>
+    <span class="toolbar-hint">Click a column header to sort</span>
   </div>
 
   <div class="table" id="table">
     <div class="row head">
-      <div>Candidate</div>
-      <div class="col-highlight-h">Main selling point</div>
-      <div class="col-portfolio-h">Portfolio</div>
-      <div>Status</div>
+      <button class="th sortable" data-sort="name">Candidate <span class="caret"><svg class="c-both" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg><svg class="c-dir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></button>
+      <button class="th sortable col-role-h" data-sort="role">Role <span class="caret"><svg class="c-both" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg><svg class="c-dir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></button>
+      <button class="th sortable col-edu-h" data-sort="school">Education <span class="caret"><svg class="c-both" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg><svg class="c-dir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></button>
+      <div class="th col-highlight-h">Main selling point</div>
+      <div class="th col-portfolio-h">Portfolio</div>
+      <button class="th sortable col-applied-h" data-sort="applied">Applied <span class="caret"><svg class="c-both" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg><svg class="c-dir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></button>
+      <button class="th sortable" data-sort="status">Status <span class="caret"><svg class="c-both" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg><svg class="c-dir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></button>
     </div>
     <div id="rows"></div>
   </div>
@@ -336,7 +444,7 @@
 </div>
 
 <footer>
-  Synced from Gmail · 6 applicants · Built for <a href="https://swarm.work" target="_blank" rel="noopener">Swarm</a>
+  Synced from Gmail · 11 applicants · Built for <a href="https://swarm.work" target="_blank" rel="noopener">Swarm</a>
 </footer>
 
 <div class="overlay" id="overlay"></div>
@@ -379,6 +487,42 @@
 </div>
 
 <script>
+/* ---------- Password gate (lightweight; not a substitute for server-side auth) ---------- */
+(function(){
+  const PW_HASH = "5a761c488f7bf090ffac9e0b53ef4db59d1d3932c4a44a0fe6073c4e6e3cb627";
+  const PW_FALLBACK = "c3dAcm0yMDI2"; // base64, only used if crypto.subtle is unavailable
+  const gate = document.getElementById("gate");
+  if (!gate) return;
+  if (sessionStorage.getItem("swarm_ats_auth") === "1") { gate.remove(); return; }
+  const input = document.getElementById("gateInput");
+  const btn = document.getElementById("gateBtn");
+  const err = document.getElementById("gateErr");
+  document.body.style.overflow = "hidden";
+  async function check(v){
+    try {
+      if (window.crypto && crypto.subtle) {
+        const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(v));
+        return [...new Uint8Array(buf)].map(x=>x.toString(16).padStart(2,"0")).join("") === PW_HASH;
+      }
+    } catch (e) {}
+    return v === atob(PW_FALLBACK);
+  }
+  async function unlock(){
+    if (await check(input.value)) {
+      sessionStorage.setItem("swarm_ats_auth","1");
+      document.body.style.overflow = "";
+      gate.style.opacity = "0";
+      setTimeout(()=>gate.remove(), 250);
+    } else {
+      err.classList.add("show"); input.value = ""; input.focus();
+    }
+  }
+  btn.addEventListener("click", unlock);
+  input.addEventListener("keydown", e => { if (e.key === "Enter") unlock(); });
+  input.addEventListener("input", () => err.classList.remove("show"));
+  setTimeout(() => input.focus(), 60);
+})();
+
 const CANDIDATES = [
   {
     id: "rolan",
@@ -386,11 +530,14 @@ const CANDIDATES = [
     email: "rolanjerorarelapinton@gmail.com",
     applied: "2026-06-13T18:16:17Z",
     status: "New",
-    highlight: "<b>Shipped 2 AI-built projects</b> and names the exact tools used on each",
-    school: "Software Engineering grad",
-    role: "Hackathon & full-stack builder",
-    aiTools: ["Codex", "Claude Code", "GitHub Copilot"],
-    pitch: "Submitted two project links built with AI agents. Mayari — an AI voice patient-intake system for Philippine clinics (hackathon), and a campaign-drive admin dashboard for his university. Transparent about which AI tools he used on each build.",
+    highlight: "<b>Java programming champion</b> who ships AI bots with LangChain + Claude Code at an AI startup",
+    school: "University of Makati · BS Computer Science (App Dev), exp. 2027",
+    schoolName: "University of Makati",
+    year: "Undergrad",
+    role: "AI & QA Intern @ SOFI AI Tech",
+    aiTools: ["Codex", "Claude Code", "LangChain"],
+    skills: ["React + Capacitor", "Node.js/Express", "TypeScript", "Firebase/Firestore", "Java", "C#", "Docker"],
+    pitch: "BS Computer Science (App Dev) at University of Makati, expected 2027. Champion in Java Programming at Infotechnolympics 2025 and represented UMak at the national IT Skills Olympics. As an AI & QA Intern at SOFI AI Tech, he engineered backend logic for the Sofi AI Policy Bot on Telegram with LangChain and Claude Code, and built an AI document-to-template onboarding tool. Full-stack projects include UMak Kalinga (a donation platform for 100+ students) and the CCED admin portal. Transparent about which AI tools he used on each build.",
     resumeFile: "RESUME-ROLAN JERO PINTON.pdf",
     thread: [
       { from: "Rolan Jero Pinton", dir: "in", date: "Jun 13, 2026", body: `• LinkedIn: Rolan Jero Pinton
@@ -418,10 +565,13 @@ Used GitHub Copilot and Codex when building this.` }
     applied: "2026-06-13T17:59:20Z",
     status: "Reviewing",
     highlight: "<b>Best 'what broke & why' story</b> — overrode the AI's boilerplate on purpose",
-    school: "Backend / desktop engineer",
-    role: "Pharmacare PMS (Electron)",
-    aiTools: ["AI agents", "Arch Linux"],
-    pitch: "Led the migration of \"Pharmacare PMS\" from web to an Electron desktop app (Node.js, MongoDB Atlas). Wrote thoughtfully about what broke — local-to-cloud connectivity and async state — and why he overrode the AI's boilerplate IPC suggestions to fit offline-sync constraints. Frames AI as a collaborator, not a replacement for architectural intuition.",
+    school: "Quezon City University · BSIT, 3rd year (exp. 2027)",
+    schoolName: "Quezon City University",
+    year: "3rd year",
+    role: "BSIT student · full-stack + GCP",
+    aiTools: ["AI agents", "Arch Linux", "CI/CD"],
+    skills: ["React", "TypeScript", "Electron", "Node.js", "MongoDB", "C#/ASP.NET", "SQL Server", "GCP"],
+    pitch: "Third-year BSIT student at Quezon City University focused on scalable web apps and cloud-native solutions on GCP. Led the migration of a Pharmacy Management System from web to an Electron desktop app (Node.js, MongoDB) — and wrote thoughtfully about what broke (local-to-cloud connectivity, async state) and why he overrode the AI's boilerplate IPC suggestions to fit offline-sync constraints. Other builds: Clarity (a live GCP-deployed cloud app) and University Compass (ASP.NET MVC + SQL Server). Frames AI as a collaborator, not a replacement for architectural intuition.",
     resumeFile: "Resume - Sean Fernandez.pdf",
     thread: [
       { from: "Sean Fernandez", dir: "in", date: "Jun 13, 2026", body: `Hi Mr. Alexis,
@@ -453,11 +603,14 @@ Sean M. Fernandez` }
     email: "paulineaudreyongchan@gmail.com",
     applied: "2026-06-12T08:36:32Z",
     status: "Reviewing",
-    highlight: "<b>Current RBC SWE intern</b>; uses AI to pressure-test thinking, not just generate",
-    school: "UBC · Business & Computer Science (3rd yr)",
-    role: "Software Developer Intern @ RBC",
-    aiTools: ["AI as thinking partner"],
-    pitch: "Currently a SWE intern at RBC building internal dashboards and workflow automation for non-technical stakeholders. Because of enterprise AI restrictions, she leans on AI to reason through tradeoffs and pressure-test assumptions rather than to generate code faster. Grew up in Manila; drawn to building for the SEA startup ecosystem.",
+    highlight: "<b>$120K scholar &amp; current RBC SWE intern</b>; shipped a RAG support bot projected at $2M ARR",
+    school: "UBC · Computer Science & Business, exp. May 2027",
+    schoolName: "University of British Columbia",
+    year: "3rd year",
+    role: "Software Engineering Intern @ RBC",
+    aiTools: ["AI as thinking partner", "RAG / AWS Kendra"],
+    skills: ["React Native", "Node.js/Express", "Supabase", "TypeScript", "Java", "C/C++", "Python", "AWS", "Power Automate"],
+    pitch: "Computer Science & Business at UBC (grad May 2027), on a $120K international scholarship. Currently a SWE intern at RBC building Power Automate workflow automation and self-service dashboards for non-technical teams. Previously a PM intern at Henry Schein One, where she shipped an AI support chatbot (AWS Kendra, RAG) projected at a 60% drop in ticket resolution time and $2M ARR. Also a Portfolio Associate at a $10M student-run VC, evaluating startups with technical diligence. Hackathon builder (nwHacks real-time safety alerts; 1st-place Sudo VC tool). Leans on AI to pressure-test assumptions, not just generate code. Grew up in Manila.",
     resumeFile: "Pauline__Swarm_resume.pdf",
     thread: [
       { from: "Pauline Ongchan", dir: "in", date: "Jun 12, 2026", body: `Hi Aaron and Alexis,
@@ -487,11 +640,14 @@ Pauline Ongchan` }
     email: "carljoshuamcoloma@gmail.com",
     applied: "2026-06-12T05:23:33Z",
     status: "Reviewing",
-    highlight: "<b>AI QA intern</b> — literally paid to judge when AI output is good or bad",
-    school: "FEU Institute of Technology · CS (SE)",
-    role: "AI QA Intern",
-    aiTools: ["ChatGPT", "Claude", "Cursor"],
-    pitch: "Recent CS grad specializing in Software Engineering. As an AI QA Intern he evaluated chatbot systems for response quality, reasoning, instruction-following, and edge cases — directly relevant to judging when AI output is good, bad, or incomplete.",
+    highlight: "<b>Built an AI résumé analyzer</b>; AI QA intern paid to judge when model output is good or bad",
+    school: "FEU Institute of Technology · BS CS (Software Eng), 2022–2026",
+    schoolName: "FEU Institute of Technology",
+    year: "Recent grad",
+    role: "AI QA Intern @ SoFi AI Tech",
+    aiTools: ["ChatGPT", "Claude", "Cursor", "n8n"],
+    skills: ["Python", "TensorFlow", "PyTorch", "OpenCV / MediaPipe", "YOLOv8", "React", "Streamlit", "Flask"],
+    pitch: "CS grad (Software Engineering specialization) from FEU, with a Best Thesis award in the Computer Vision category. As an AI QA Intern at SoFi AI Tech he designs structured test cases for conversational AI and analyzes outputs for reasoning and instruction-following failures — directly the 'judgment over output' skill. Prior AI Engineer intern at Lamina Studios (computer vision + route optimization). Notably built an AI Résumé Analyzer (NLP entity extraction + candidate-job match scoring over 100+ resumes) and an AI Document Summarizer — strong ML/CV depth. (Same SOFI AI Tech internship as Rolan Pinton.)",
     resumeFile: "Carl Joshua Coloma - CV.pdf",
     thread: [
       { from: "Carl Joshua Coloma", dir: "in", date: "Jun 12, 2026", body: `Good day!
@@ -519,11 +675,14 @@ Carl Joshua M. Coloma` }
     email: "danmedado04@gmail.com",
     applied: "2026-06-12T01:31:00Z",
     status: "Reviewing",
-    highlight: "<b>Builds & maintains a real full-stack app</b> in daily use by his family's business",
-    school: "Ateneo de Manila · MIS (graduating)",
+    highlight: "<b>DOST scholar (Pisay → Ateneo)</b> who ships a real full-stack app for a Petron franchise",
+    school: "Ateneo de Manila · BS MIS (DOST Scholar); Philippine Science HS",
+    schoolName: "Ateneo de Manila University",
+    year: "Graduating",
     role: "Digital Transformation Intern @ KPMG",
-    aiTools: ["AI-amplified debugging"],
-    pitch: "Built and still maintains a full-stack Car Repair Center Management System (React, TypeScript, Supabase) for his family's franchise. Interned at KPMG PH on Angular/Lumen internal tooling for a major client — sat in client meetings and scoped requirements. Leadership roles across two university orgs.",
+    aiTools: ["AI-augmented dev workflows"],
+    skills: ["React", "TypeScript", "Supabase", "JavaScript", "PHP", "Angular", "Lumen"],
+    pitch: "BS Management Information Systems at Ateneo de Manila, a DOST Merit Scholar and Philippine Science High School alum. Used AI-augmented workflows to architect and deploy a full-stack Job Order & Inventory Management System (React, TypeScript, Supabase) for a Petron Car Care Center franchise. Interned at KPMG PH on Angular/Lumen internal tooling for a major client — sat in client meetings and scoped requirements. Capstone PWA for Theomeds plus a role-based therapy app (HabitOT). Leadership as Esports Director and Documentations Director.",
     resumeFile: "MedadoDaniel_Resume_2026 (1).pdf",
     thread: [
       { from: "Daniel Jan Medado", dir: "in", date: "Jun 12, 2026", body: `Hi Aaron and Alexis,
@@ -551,11 +710,15 @@ Daniel Jan P. Medado` }
     email: "johnyumul.ph@gmail.com",
     applied: "2026-06-11T15:18:28Z",
     status: "Contacted",
-    highlight: "<b>Already on Alexis's radar</b> from his Qwen meetup talk; flagged for next steps",
-    school: "CS grad · design/product background",
-    role: "Startup experience",
-    aiTools: ["AI transformation focus"],
-    pitch: "Fresh CS grad with startup and design/product experience, recently shifting toward AI and more technical work. Alexis already replied — recognized him from his talk at the Qwen meetup and flagged him for next steps next week.",
+    appliedRole: "Design Engineer Intern",
+    highlight: "<b>Magna Cum Laude &amp; PH100 under 30</b>; hackathon winner, ex-Dashlabs (YC W21), community builder",
+    school: "Batangas State University · BS CS, Magna Cum Laude (exp. Jun 2026)",
+    schoolName: "Batangas State University",
+    year: "Fresh grad",
+    role: "Technical PM / Founder's Associate",
+    aiTools: ["Claude", "ChatGPT", "Cursor", "Vercel", "GHL"],
+    skills: ["Python", "JavaScript", "React", "SQL", "UX Research", "Workflow automation", "MVP design"],
+    pitch: "BS Computer Science at Batangas State University, Magna Cum Laude standing and 8/8 Dean's Lister; named to PH100 under 30. Blends AI, product and UX: Technical PM driving ₱50K workshop revenue, Founder's Associate running AI-assisted MVP development, and a Support Engineer Intern at Dashlabs.ai (YC W21). Founding Designer at a venture-backed startup and UX Researcher at Angkas. Hackathon track record (1st place Sikaptala at DLSU; 3rd at GenAIus) and founder of two communities (gen z book club, 500 members; Pizza and Friends, 300). Alexis already replied — recognized him from his Qwen meetup talk and flagged him for next steps.",
     note: "Alexis replied Jun 11: \"I remember you from your talk at the Qwen meetup. Aaron and I will reach out next week for next steps.\"",
     resumeFile: "John_Yumul_Resume.pdf",
     thread: [
@@ -580,6 +743,217 @@ Alexis` }
       { type: "Portfolio", url: "https://johnyumul.com" },
       { type: "LinkedIn", url: "https://linkedin.com/in/yumuljohn/" }
     ]
+  },
+  {
+    id: "jj",
+    name: "JJ Pardo",
+    email: "johnjerome.pardo@gmail.com",
+    applied: "2026-06-12T06:31:41Z",
+    status: "New",
+    highlight: "<b>Ateneo CS · catches AI hallucinations before they ship</b> — entroscope on PyPI, 3rd at BlueHacks 2026",
+    school: "Ateneo de Manila University · BS Computer Science, 3rd year",
+    schoolName: "Ateneo de Manila University",
+    year: "3rd year",
+    role: "Builder · Ateneo de Manila",
+    aiTools: ["Claude Code", "Cursor", "Claude", "Gemini"],
+    skills: ["TypeScript", "Python", "Rust", "Java", "Swift", "React/Next", "Django", "Postgres", "GCP", "Cloudflare"],
+    pitch: "3rd year CS at Ateneo de Manila (remote or hybrid, Makati works, available ASAP). Leads with how he works rather than a project list. Built NextOnMenu (food trend detector) directing Claude Code + Gemini agents — and personally caught every hallucination before it mattered: a benchmark reporting wins with zero real positives, homonym contamination invalidating a dataset, and spurious autocorrelation masquerading as a signal. His rule: ask the model to skeptically audit itself, then run a falsification check. That rigor shipped entroscope to PyPI (15 stars, ~1.1k downloads, 7 entropy measures in one API). Also: sim.ula (3rd at BlueHacks 2026, GraphRAG + DeBERTa NLI hallucination guard), S1napse (60Hz multi-source telemetry), bigfiles (Rust CLI on crates.io). Treats Claude Code like a junior PR to review. Met Alexis at an OpenClaw event.",
+    thread: [
+      { from: "JJ Pardo", dir: "in", date: "Jun 12, 2026", body: `Hi Aaron and Alexis,
+
+JJ Pardo, 3rd year CS at Ateneo de Manila University (Alexis, we met at an OpenClaw event, hope you're doing well).
+
+Your post is the most honest framing of AI-augmented work I've seen on a job listing, so I'll lead with how I work, not a project list.
+
+I spent the last few weeks building NextOnMenu, a food trend early-signal detector. Claude Code did most of the building, a second Claude instance reviewed it, Gemini handled deep research. My job was directing the agents and catching them when they were wrong, which happened a lot. The model once reported a metric that "beat the benchmark" but when I checked it had caught zero real positives. Another time, most of the dataset turned out to be off-topic from homonym contamination. A clean lead-time signal between two series looked promising until proper null controls showed it was just autocorrelation. Every catch came from either asking the model to skeptically audit itself or running a falsification check before committing to anything expensive.
+
+That work also turned into entroscope (https://github.com/Par-python/entroscope), now on PyPI with 15 stars and ~1.1k downloads.
+
+I run Claude Code as the primary agent inside VS Code and Cursor, with Claude and Gemini in side tabs. The workflow is closer to directing than autocompleting. I read every change Claude Code proposes before accepting, the way I'd read a junior PR.
+
+Other shipped work:
+- sim.ula (https://simula.cjuy.dev) — AI urban policy simulator, 3rd at BlueHacks 2026
+- S1napse (https://s1napse.jjpardo.com) — multi-sim and real-car telemetry suite, 60Hz
+- bigfiles (https://github.com/Par-python/bigfiles) — Rust CLI on crates.io
+
+Remote or hybrid, Makati works, available ASAP.
+
+Portfolio: jjpardo.com
+CV: cv.jjpardo.com
+LinkedIn: https://www.linkedin.com/in/john-jerome-pardo-24b5bb311/
+GitHub: github.com/Par-python
+
+Thanks,
+JJ` }
+    ],
+    links: [
+      { type: "Portfolio", url: "https://jjpardo.com" },
+      { type: "CV", url: "https://cv.jjpardo.com" },
+      { type: "LinkedIn", url: "https://www.linkedin.com/in/john-jerome-pardo-24b5bb311/" },
+      { type: "GitHub", url: "https://github.com/Par-python" },
+      { type: "Project — entroscope", url: "https://github.com/Par-python/entroscope" },
+      { type: "Project — sim.ula", url: "https://simula.cjuy.dev" }
+    ]
+  },
+  {
+    id: "ian",
+    name: "Ian Vergara",
+    email: "iamvergsuu@gmail.com",
+    applied: "2026-06-15T07:44:53Z",
+    status: "New",
+    highlight: "<b>Ships live .ph products</b> — Dash2Career and RushPH in market; AI writes code, he builds the product",
+    school: "",
+    schoolName: "",
+    year: null,
+    role: "Full-Stack Developer",
+    aiTools: ["AI-augmented dev"],
+    skills: ["Full-stack", "Product development", "SaaS", "Philippines market"],
+    pitch: "Full-stack developer building real products in the Philippine market. Dash2Career (dash2career.ph) and RushPH (rush-ph.com) are live. Philosophy: AI writes the code, he builds the product — the value is in knowing what to build, recognizing bad output, and iterating until it solves a real problem. Applied mid-way through rebuilding his portfolio site because he'd rather take the shot than wait for perfection. Has published tech articles on LinkedIn. Attached resume and portfolio PDF.",
+    thread: [
+      { from: "Ian Vergara", dir: "in", date: "Jun 15, 2026", body: `I'm Ian Vergara, a full-stack developer who enjoys building products quickly and figuring things out without needing every detail handed to me upfront.
+
+I saw Alexis' post and immediately resonated with it because it describes how I already work. While AI is a major part of my development workflow, I've learned that generating code is the easy part. The harder part is knowing what should be built, recognizing when something is wrong and iterating until the solution actually works.
+
+Most of the projects I've built started with ambiguity, incomplete requirements, and technologies I hadn't used before. My default response has always been to learn fast and fail fast.
+
+AI writes the code, I build the product.
+
+I've attached my resume and portfolio. Full disclaimer: my portfolio is pretty outdated at this point. I was actually in the middle of building my portfolio website when I came across this opportunity. I figured I'd rather take my shot now than miss the opportunity trying to make everything look perfect.
+
+Live projects:
+- Dash2Career – https://dash2career.ph/
+- RushPH – https://rush-ph.com/
+
+Looking forward to hearing from you.
+
+Best,
+Ian Vergara` }
+    ],
+    links: [
+      { type: "Project — Dash2Career", url: "https://dash2career.ph/" },
+      { type: "Project — RushPH", url: "https://rush-ph.com/" }
+    ]
+  },
+  {
+    id: "tyrone",
+    name: "Tyrone Tabornal",
+    email: "tyronetabornal@gmail.com",
+    applied: "2026-06-15T10:03:57Z",
+    status: "New",
+    highlight: "<b>Full-stack SaaS from Cebu</b> — PigeonVault with Stripe billing, OCR, auth, and admin tools",
+    school: "BS Information Technology · Cebu",
+    schoolName: "BS IT Student (Cebu)",
+    year: "Undergrad",
+    role: "BS IT Student · Full-Stack Developer",
+    aiTools: ["Codex", "Cursor", "ChatGPT", "Gemini", "OpenRouter"],
+    skills: ["Full-stack", "SaaS", "Stripe", "OCR", "Auth", "Deployment"],
+    pitch: "BS IT student and full-stack developer from Cebu. Built PigeonVault — a full-stack SaaS platform for pigeon loft management covering auth, dashboards, OCR document processing, Stripe billing, admin tools, and deployment. Uses Codex, Cursor, ChatGPT, and Gemini/OpenRouter to read code faster, debug, scaffold features, and check edge cases. Portfolio at orrin.tyronemt.dev.",
+    resumeFile: "Tyrone Tabornal - CV Tech Updated (1).pdf",
+    thread: [
+      { from: "Tyrone Tabornal", dir: "in", date: "Jun 15, 2026", body: `Hi Aaron and Alexis,
+
+I saw your LinkedIn post about the Software Engineering Intern role at Swarm and wanted to apply.
+
+I'm Tyrone Tabornal, a BS IT student and full-stack developer from Cebu. I've used tools like Codex, Cursor, ChatGPT, and Gemini/OpenRouter while building projects, mostly for reading code faster, debugging, scaffolding features, and checking edge cases.
+
+The project I'd like to share is PigeonVault, a full-stack SaaS platform for pigeon loft management. I worked on the auth, dashboards, OCR document processing, Stripe billing, admin tools, and deployment fixes.
+
+LinkedIn: https://www.linkedin.com/in/tyrone-tabornal-738984274/
+Portfolio: https://orrin.tyronemt.dev/
+
+I've attached my resume.
+
+Best,
+Tyrone Tabornal` }
+    ],
+    links: [
+      { type: "Portfolio", url: "https://orrin.tyronemt.dev/" },
+      { type: "LinkedIn", url: "https://www.linkedin.com/in/tyrone-tabornal-738984274/" }
+    ]
+  },
+  {
+    id: "bryan",
+    name: "Bryan Reamillo",
+    email: "bryanreamillo2403@gmail.com",
+    applied: "2026-06-15T10:30:24Z",
+    status: "New",
+    highlight: "<b>Fresh grad inquiring about junior roles</b> — basic web projects on GitHub Pages, asking if fresh grad roles are open",
+    school: "Fresh Graduate",
+    schoolName: "Fresh Graduate",
+    year: "Fresh grad",
+    role: "Fresh Graduate · Web Developer",
+    aiTools: [],
+    skills: ["HTML/CSS/JS", "GitHub Pages"],
+    pitch: "Fresh graduate reaching out to ask if there are open roles for fresh graduates in addition to the internship. Has built basic web projects hosted on GitHub Pages: a To-Do app (Memento), a landing page (Simply-Sushi), and a weather app (Nimbus). Resume attached. LinkedIn and GitHub provided.",
+    resumeFile: "B.Reamillo - CV.pdf",
+    thread: [
+      { from: "Bryan Reamillo", dir: "in", date: "Jun 15, 2026", body: `Dear Aaron and Alexis,
+
+I hope you are both having a great week.
+
+I saw your recent post on LinkedIn regarding hiring software engineer interns, and I was wondering if there might also be any roles currently open for fresh graduates.
+
+I have attached my resume to this email for your review. You can also find my professional profiles and projects at the links below:
+
+LinkedIn: https://www.linkedin.com/in/bryan-luise-reamillo
+GitHub: https://www.github.com/Bleu24
+
+Projects:
+- Basic To-Do app: https://bleu24.github.io/Memento/
+- Sample landing page: https://bleu24.github.io/Simply-Sushi/
+- Basic weather app: https://bleu24.github.io/Nimbus/
+
+Thank you for your time and for considering my inquiry. I look forward to hearing from you.
+
+Best regards,
+Bryan Reamillo` }
+    ],
+    links: [
+      { type: "LinkedIn", url: "https://www.linkedin.com/in/bryan-luise-reamillo" },
+      { type: "GitHub", url: "https://www.github.com/Bleu24" },
+      { type: "Project — Memento", url: "https://bleu24.github.io/Memento/" }
+    ]
+  },
+  {
+    id: "sebastian",
+    name: "Sebastian Merdegia",
+    email: "sebastian.merdegia@gmail.com",
+    applied: "2026-06-16T01:55:07Z",
+    status: "New",
+    highlight: "<b>UPLB CS student building Loyalvy</b> — B2B2C loyalty SaaS field-tested with Marikina coffee shop owners",
+    school: "University of the Philippines Los Baños · BS Computer Science",
+    schoolName: "UP Los Baños",
+    year: "Undergrad",
+    role: "CS Student · UPLB",
+    aiTools: [],
+    skills: ["Product development", "B2B2C", "SaaS", "React", "Vercel"],
+    pitch: "Computer Science student at UPLB (University of the Philippines Los Baños). Applied as Design Engineer Intern. Built Loyalvy, a B2B2C loyalty platform for local coffee shops — born from a personal love of coffee and small businesses, and tested with coffee shop owners around Marikina to understand real-world fit and shortcomings. Shows strong product intuition and a bias for in-field validation over building in isolation. Portfolio currently being updated (Notion link provided).",
+    resumeFile: "MERDEGIA_Resume.pdf",
+    thread: [
+      { from: "Sebastian Merdegia", dir: "in", date: "Jun 16, 2026", body: `Hi Alexis,
+
+I'm a Computer Science student at UPLB.
+
+I've always been drawn to building products, not for the sake of building them, but because I enjoy figuring out how technology can solve real problems and communicate them clearly to the people using it.
+
+One project I'm particularly proud of is Loyalvy, a B2B2C loyalty platform for coffee shops. It started as a passion project born from my love of coffee and small businesses, and I've been sharing it with coffee shop owners around Marikina to learn how it fits into their day-to-day operations and where it falls short.
+
+Loyalvy: https://loyalvy.vercel.app/
+
+Resume attached.
+
+LinkedIn: https://www.linkedin.com/in/sebastian-merdegia/
+
+Portfolio (Currently Updating): https://app.notion.com/p/Temporary-Portfolio-Page-edc4dbb9c32d4c74ac0d4e70bb39d8bd
+
+Best,
+Sebastian Merdegia` }
+    ],
+    links: [
+      { type: "Project — Loyalvy", url: "https://loyalvy.vercel.app/" },
+      { type: "LinkedIn", url: "https://www.linkedin.com/in/sebastian-merdegia/" },
+      { type: "Portfolio (Notion)", url: "https://app.notion.com/p/Temporary-Portfolio-Page-edc4dbb9c32d4c74ac0d4e70bb39d8bd" }
+    ]
   }
 ];
 
@@ -592,7 +966,12 @@ const THREADS = {
   pauline: "19ebaf9fd9c61e72",
   carl: "19eba494db664ce8",
   daniel: "19eb9753c976585a",
-  john: "19eb74529d4844f6"
+  john: "19eb74529d4844f6",
+  jj: "19eba87adab041f4",
+  ian: "19eca3dc486a133c",
+  tyrone: "19ecabd19023dae3",
+  bryan: "19ecad5b5b2969a6",
+  sebastian: "19ece23e7633c325"
 };
 function gmailUrl(id) { return `https://mail.google.com/mail/?authuser=${encodeURIComponent(GMAIL_USER)}#all/${THREADS[id]}`; }
 const STATUSES = ["New", "Reviewing", "Contacted", "Interview", "Offer", "Rejected"];
@@ -635,7 +1014,32 @@ const rowsEl = document.getElementById("rows");
 const emptyEl = document.getElementById("empty");
 const searchEl = document.getElementById("search");
 const statusFilterEl = document.getElementById("statusFilter");
-const sortByEl = document.getElementById("sortBy");
+const roleFilterEl = document.getElementById("roleFilter");
+
+// Column sorting state
+let sortState = { key: "applied", dir: "desc" };
+function sortValue(c, key) {
+  if (key === "name") return c.name.toLowerCase();
+  if (key === "applied") return new Date(c.applied).getTime();
+  if (key === "status") return STATUSES.indexOf(c.status);
+  if (key === "role") return roleInfo(c).full.toLowerCase();
+  if (key === "school") return (c.schoolName || "￿").toLowerCase(); // unknown schools sort last
+  return "";
+}
+function compareCandidates(a, b) {
+  const dir = sortState.dir === "asc" ? 1 : -1;
+  const va = sortValue(a, sortState.key), vb = sortValue(b, sortState.key);
+  if (va < vb) return -1 * dir;
+  if (va > vb) return 1 * dir;
+  return a.name.localeCompare(b.name);
+}
+function updateSortIndicators() {
+  document.querySelectorAll(".th.sortable").forEach(th => {
+    const active = th.dataset.sort === sortState.key;
+    th.classList.toggle("active", active);
+    th.classList.toggle("asc", active && sortState.dir === "asc");
+  });
+}
 
 function renderStats() {
   const total = CANDIDATES.length;
@@ -653,6 +1057,21 @@ function renderStats() {
 }
 
 function badge(status) { return `<span class="badge ${STATUS_CLASS[status]}"><span class="dot"></span>${status}</span>`; }
+function eduCell(c) {
+  const has = !!c.schoolName;
+  const name = `<div class="edu-name${has ? "" : " none"}"${has ? ' title="'+escapeHtml(c.school||c.schoolName)+'"' : ''}>${escapeHtml(c.schoolName || "Not specified")}</div>`;
+  const badges = `${c.year ? `<span class="year-tag">${escapeHtml(c.year)}</span>` : ""}${isIvy(c.school) ? `<span class="ivy-tag" title="${escapeHtml(c.school)}">Ivy League</span>` : ""}`;
+  return name + (badges ? `<div class="edu-badges">${badges}</div>` : "");
+}
+function roleInfo(c) {
+  const r = c.appliedRole || "Software Engineering Intern";
+  if (/design/i.test(r)) return { full: r, short: "Design Eng", cls: "role-design" };
+  return { full: r, short: "SWE Intern", cls: "role-swe" };
+}
+function roleCell(c) {
+  const r = roleInfo(c);
+  return `<span class="role-pill ${r.cls}" title="${escapeHtml(r.full)}">${r.short}</span>`;
+}
 function portfolioCell(c) {
   const p = primaryPortfolio(c);
   if (!p) return `<span class="portfolio-empty">—</span>`;
@@ -664,17 +1083,15 @@ function portfolioCell(c) {
 function render() {
   const q = searchEl.value.trim().toLowerCase();
   const sf = statusFilterEl.value;
+  const rf = roleFilterEl.value;
   let list = CANDIDATES.filter(c => {
     if (sf && c.status !== sf) return false;
+    if (rf && (c.appliedRole || "Software Engineering Intern") !== rf) return false;
     if (!q) return true;
-    return [c.name, c.email, c.school, c.role, c.pitch, (c.aiTools||[]).join(" ")].join(" ").toLowerCase().includes(q);
+    return [c.name, c.email, c.school, c.role, c.pitch, roleInfo(c).full, (c.aiTools||[]).join(" ")].join(" ").toLowerCase().includes(q);
   });
-  const sort = sortByEl.value;
-  list.sort((a,b) => {
-    if (sort === "name") return a.name.localeCompare(b.name);
-    if (sort === "oldest") return new Date(a.applied) - new Date(b.applied);
-    return new Date(b.applied) - new Date(a.applied);
-  });
+  list.sort(compareCandidates);
+  updateSortIndicators();
 
   emptyEl.style.display = list.length ? "none" : "block";
   rowsEl.innerHTML = list.map(c => `
@@ -682,12 +1099,15 @@ function render() {
       <div class="cand">
         <div class="avatar" style="background:${colorFor(c.id)}">${initials(c.name)}</div>
         <div class="cand-info">
-          <div class="cand-name">${escapeHtml(c.name)}${isIvy(c.school) ? '<span class="ivy-tag" title="'+escapeHtml(c.school)+'">Ivy League</span>' : ''}</div>
+          <div class="cand-name"><span class="nm">${escapeHtml(c.name)}</span></div>
           <div class="cand-email">${escapeHtml(c.email)}</div>
         </div>
       </div>
+      <div class="col-role">${roleCell(c)}</div>
+      <div class="col-edu">${eduCell(c)}</div>
       <div class="col-highlight">${c.highlight || escapeHtml(c.role || "—")}</div>
       <div class="col-portfolio">${portfolioCell(c)}</div>
+      <div class="col-applied col-muted" title="${new Date(c.applied).toLocaleString()}">${timeAgo(c.applied)}</div>
       <div>${badge(c.status)}</div>
     </div>`).join("");
 
@@ -707,57 +1127,76 @@ function openDrawer(id) {
   const newTabSvg = `<svg class="expand" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>`;
   const mailSvg = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg>`;
 
+  const pf = primaryPortfolio(c);
   drawer.innerHTML = `
     <div class="drawer-head">
-      <div class="avatar" style="background:${colorFor(c.id)};width:44px;height:44px;font-size:16px;">${initials(c.name)}</div>
-      <div style="flex:1;min-width:0;">
-        <div class="drawer-name">${escapeHtml(c.name)}</div>
-        <div class="drawer-email">${escapeHtml(c.email)}</div>
+      <div class="avatar avatar-lg" style="background:${colorFor(c.id)}">${initials(c.name)}</div>
+      <div class="dh-meta">
+        <div class="dh-title"><span class="dh-name">${escapeHtml(c.name)}</span>${c.year ? '<span class="year-tag">'+escapeHtml(c.year)+'</span>' : ''}${isIvy(c.school) ? '<span class="ivy-tag" title="'+escapeHtml(c.school)+'">Ivy League</span>' : ''}</div>
+        <div class="dh-sub">${escapeHtml(c.role||"")}${c.schoolName ? (c.role ? " · " : "") + escapeHtml(c.schoolName) : ""}</div>
+        <a class="dh-email" href="mailto:${c.email}">${escapeHtml(c.email)}</a>
       </div>
-      <button class="icon-btn" id="closeDrawer" aria-label="Close">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
-      </button>
+      <div class="dh-right">
+        ${badge(c.status)}
+        <button class="icon-btn" id="closeDrawer" aria-label="Close">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
     </div>
+
+    <div class="dh-actions">
+      ${c.resumeFile ? `<button class="act primary" data-view="resume">${docSvg}View résumé</button>` : ""}
+      ${pf ? `<a class="act" href="${pf.url}" target="_blank" rel="noopener">${linkSvg}Portfolio</a>` : ""}
+      <a class="act" href="${gmailUrl(c.id)}" target="_blank" rel="noopener">${mailSvg}Email thread</a>
+    </div>
+
     <div class="drawer-body">
-      <div class="section-label">Status</div>
-      <div class="status-picker" id="statusPicker">
-        ${STATUSES.map(s => `<button class="status-opt ${s===c.status?'active '+STATUS_CLASS[s]:''}" data-status="${s}">${s}</button>`).join("")}
-      </div>
-
-      <div class="section-label">Resume &amp; portfolio</div>
-      <div class="link-list">
-        ${c.resumeFile ? `<a class="link-item" href="${gmailUrl(c.id)}" target="_blank" rel="noopener">${docSvg}<span class="lt">Résumé — open in Gmail</span><span class="lu">${escapeHtml(c.resumeFile)}</span>${newTabSvg}</a>` : ""}
-        ${c.links.map((l) => `<a class="link-item" href="${l.url}" target="_blank" rel="noopener">${linkSvg}<span class="lt">${escapeHtml(l.type)}</span><span class="lu">${escapeHtml(domain(l.url))}</span>${newTabSvg}</a>`).join("")}
-        <a class="link-item" href="${gmailUrl(c.id)}" target="_blank" rel="noopener">${mailSvg}<span class="lt">Open application email</span><span class="lu">Gmail</span>${newTabSvg}</a>
-      </div>
-
-      <div class="section-label">Overview</div>
-      <div class="meta-grid">
-        <div><div class="k">Background</div><div class="v">${escapeHtml(c.school||"—")}</div></div>
-        <div><div class="k">Current / notable</div><div class="v">${escapeHtml(c.role||"—")}</div></div>
-        <div><div class="k">Applied</div><div class="v">${new Date(c.applied).toLocaleDateString(undefined,{month:"long",day:"numeric",year:"numeric"})}</div></div>
-        <div><div class="k">Source</div><div class="v">Gmail · Applicants</div></div>
-      </div>
-
-      ${c.aiTools && c.aiTools.length ? `<div class="section-label">AI tooling mentioned</div><div class="tag-row">${c.aiTools.map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join("")}</div>` : ""}
-
-      <div class="section-label">Summary</div>
-      <div class="pitch">${escapeHtml(c.pitch)}</div>
-
-      ${c.note ? `<div class="section-label">Note</div><div class="pitch" style="color:var(--accent)">${escapeHtml(c.note)}</div>` : ""}
-
-      ${c.thread && c.thread.length ? `<div class="section-label">Email thread · ${c.thread.length} message${c.thread.length>1?"s":""}</div>
-      <div class="thread">
-        ${c.thread.map(m => `<div class="msg ${m.dir}">
-          <div class="msg-head">
-            <span class="msg-from">${escapeHtml(m.from)}</span>
-            <span class="msg-dir ${m.dir}">${m.dir==="out"?"Swarm":"Applicant"}</span>
-            <span class="msg-date">${escapeHtml(m.date)}</span>
+      <div class="modal-cols">
+        <div class="col-left">
+          <div class="section-label">Stage</div>
+          <div class="status-picker" id="statusPicker">
+            ${STATUSES.map(s => `<button class="status-opt ${s===c.status?'active '+STATUS_CLASS[s]:''}" data-status="${s}">${s}</button>`).join("")}
           </div>
-          <div class="msg-body">${escapeHtml(m.body)}</div>
-        </div>`).join("")}
+
+          <div class="section-label">Details</div>
+          <div class="meta-stack">
+            <div class="m"><div class="k">Applied for</div><div class="v"><span class="role-pill ${roleInfo(c).cls}">${escapeHtml(roleInfo(c).full)}</span></div></div>
+            <div class="m"><div class="k">Education</div><div class="v">${escapeHtml(c.school||"—")}</div></div>
+            ${c.year ? `<div class="m"><div class="k">Year level</div><div class="v">${escapeHtml(c.year)}</div></div>` : ""}
+            <div class="m"><div class="k">Current / notable</div><div class="v">${escapeHtml(c.role||"—")}</div></div>
+            <div class="m"><div class="k">Applied</div><div class="v">${new Date(c.applied).toLocaleDateString(undefined,{month:"long",day:"numeric",year:"numeric"})}</div></div>
+          </div>
+
+          ${c.aiTools && c.aiTools.length ? `<div class="section-label">AI tooling</div><div class="tag-row">${c.aiTools.map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join("")}</div>` : ""}
+
+          ${c.skills && c.skills.length ? `<div class="section-label">Key skills</div><div class="tag-row">${c.skills.map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join("")}</div>` : ""}
+
+          <div class="section-label">Links</div>
+          <div class="link-list">
+            ${c.links.map((l) => `<a class="link-item" href="${l.url}" target="_blank" rel="noopener">${linkSvg}<span class="lt">${escapeHtml(l.type)}</span><span class="lu">${escapeHtml(domain(l.url))}</span>${newTabSvg}</a>`).join("")}
+          </div>
+        </div>
+
+        <div class="col-right">
+          <div class="section-label">Why they stand out</div>
+          <div class="pitch">${escapeHtml(c.pitch)}</div>
+
+          ${c.note ? `<div class="callout">${mailSvg}<div>${escapeHtml(c.note)}</div></div>` : ""}
+
+          ${c.thread && c.thread.length ? `<div class="section-label">Email thread · ${c.thread.length} message${c.thread.length>1?"s":""}</div>
+          <div class="thread">
+            ${c.thread.map(m => `<div class="msg ${m.dir}">
+              <div class="msg-head">
+                <span class="msg-from">${escapeHtml(m.from)}</span>
+                <span class="msg-dir ${m.dir}">${m.dir==="out"?"Swarm":"Applicant"}</span>
+                <span class="msg-date">${escapeHtml(m.date)}</span>
+              </div>
+              <div class="msg-body">${escapeHtml(m.body)}</div>
+            </div>`).join("")}
+          </div>
+          <div style="margin-top:12px;"><a class="btn" href="${gmailUrl(c.id)}" target="_blank" rel="noopener" style="display:inline-flex;">${mailSvg}&nbsp;Open full thread in Gmail</a></div>` : ""}
+        </div>
       </div>
-      <div style="margin-top:12px;"><a class="btn" href="${gmailUrl(c.id)}" target="_blank" rel="noopener" style="display:inline-flex;">${mailSvg}&nbsp;Open full thread in Gmail</a></div>` : ""}
     </div>`;
 
   drawer.querySelector("#closeDrawer").addEventListener("click", closeDrawer);
@@ -766,6 +1205,9 @@ function openDrawer(id) {
       c.status = btn.dataset.status; saveStatus(c.id, c.status);
       openDrawer(c.id); renderStats(); render();
     }));
+  const resumeBtn = drawer.querySelector('[data-view="resume"]');
+  if (resumeBtn) resumeBtn.addEventListener("click", () =>
+    openViewer({ title: "Résumé — " + c.name, sub: c.resumeFile, url: RESUME_DIR + encPath(c.resumeFile), kind: "resume" }));
   drawer.classList.add("open");
   overlay.classList.add("open");
   drawer.setAttribute("aria-hidden", "false");
@@ -842,27 +1284,33 @@ function openViewer({ title, sub, url, kind }) {
   function blocked() {
     viewerFrame.style.display = "none";
     if (kind === "resume") {
-      fbTitle.textContent = "Résumé not found locally";
-      fbMsg.innerHTML = "This résumé is a Gmail attachment. To view it here, drop the PDF into a <code>" + escapeHtml(RESUME_DIR) + "</code> folder next to this file, keeping the exact filename <code>" + escapeHtml(sub) + "</code>.";
+      fbTitle.textContent = "Résumé not found";
+      fbMsg.innerHTML = "Couldn't load <code>" + escapeHtml(sub) + "</code>. Make sure the PDF is in the <code>" + escapeHtml(RESUME_DIR) + "</code> folder next to this file with that exact name.";
       viewerFallback.classList.add("show");
     } else {
       showScreenshot(url); // full-page screenshot instead of a dead end
     }
   }
 
-  // Detect a blocked / empty embed.
-  fbTimer = setTimeout(() => {
-    let ok = false;
-    try { ok = !!(viewerFrame.contentDocument && viewerFrame.contentDocument.body && viewerFrame.contentDocument.body.childNodes.length); }
-    catch (e) { ok = true; } // cross-origin = it rendered something
-    if (!ok) blocked();
-  }, 2200);
-  viewerFrame.onload = () => {
-    try {
-      if (viewerFrame.contentDocument && viewerFrame.contentDocument.body && viewerFrame.contentDocument.body.childNodes.length === 0) blocked();
-    } catch (e) { /* cross-origin, assume it loaded fine */ }
-  };
-  viewerFrame.onerror = () => blocked();
+  if (kind === "resume") {
+    // PDFs render natively in the iframe; only surface a fallback if the file is genuinely missing.
+    viewerFrame.onload = null;
+    viewerFrame.onerror = () => blocked();
+  } else {
+    // Detect a blocked / empty web embed and swap to a screenshot.
+    fbTimer = setTimeout(() => {
+      let ok = false;
+      try { ok = !!(viewerFrame.contentDocument && viewerFrame.contentDocument.body && viewerFrame.contentDocument.body.childNodes.length); }
+      catch (e) { ok = true; } // cross-origin = it rendered something
+      if (!ok) blocked();
+    }, 2200);
+    viewerFrame.onload = () => {
+      try {
+        if (viewerFrame.contentDocument && viewerFrame.contentDocument.body && viewerFrame.contentDocument.body.childNodes.length === 0) blocked();
+      } catch (e) { /* cross-origin, assume it loaded fine */ }
+    };
+    viewerFrame.onerror = () => blocked();
+  }
 }
 function closeViewer() {
   clearTimeout(fbTimer);
@@ -897,7 +1345,19 @@ document.getElementById("themeBtn").addEventListener("click", () =>
 
 searchEl.addEventListener("input", render);
 statusFilterEl.addEventListener("change", render);
-sortByEl.addEventListener("change", render);
+roleFilterEl.addEventListener("change", render);
+
+document.querySelectorAll(".th.sortable").forEach(th =>
+  th.addEventListener("click", () => {
+    const key = th.dataset.sort;
+    if (sortState.key === key) {
+      sortState.dir = sortState.dir === "asc" ? "desc" : "asc";
+    } else {
+      sortState.key = key;
+      sortState.dir = (key === "name" || key === "school") ? "asc" : "desc";
+    }
+    render();
+  }));
 
 renderStats();
 render();
