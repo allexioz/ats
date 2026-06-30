@@ -113,8 +113,8 @@
 
   .table { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--bg); box-shadow: var(--shadow); }
   .row {
-    display: grid; grid-template-columns: 1fr 122px 200px 1fr 166px 110px 108px; align-items: center;
-    gap: 16px; padding: 14px 20px; border-bottom: 1px solid var(--border);
+    display: grid; grid-template-columns: 1fr 188px 110px 168px 1fr 140px 96px 100px; align-items: center;
+    gap: 14px; padding: 14px 20px; border-bottom: 1px solid var(--border);
     cursor: pointer; transition: background 0.12s ease;
   }
   .portfolio-link {
@@ -130,6 +130,13 @@
   .role-pill { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 6px; font-size: 11.5px; font-weight: 600; white-space: nowrap; }
   .role-swe { background: var(--blue-bg); color: var(--blue-fg); }
   .role-design { background: var(--purple-bg); color: var(--purple-fg); }
+  .rating-stars { display: flex; align-items: center; gap: 6px; }
+  .stars { position: relative; display: inline-block; font-size: 13px; line-height: 1; white-space: nowrap; font-family: Arial, "Segoe UI Symbol", sans-serif; }
+  .stars-bg { color: var(--border-strong); letter-spacing: 2px; }
+  .stars-fg { position: absolute; left: 0; top: 0; overflow: hidden; color: #f5a623; letter-spacing: 2px; white-space: nowrap; }
+  .rating-num { font-size: 12px; font-weight: 600; color: var(--fg-muted); }
+  .rating-note { margin-top: 5px; font-size: 11.5px; line-height: 1.42; color: var(--fg-faint); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .stars.lg { font-size: 18px; }
   .row:last-child { border-bottom: none; }
   .row:hover { background: var(--hover); }
   .row.head { background: var(--bg-subtle); cursor: default; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--fg-faint); font-weight: 500; }
@@ -244,19 +251,6 @@
     .meta-grid { grid-template-columns: 1fr; }
   }
 
-  /* Password gate */
-  .gate { position: fixed; inset: 0; z-index: 100; background: var(--bg); display: flex; align-items: center; justify-content: center; padding: 24px; transition: opacity 0.25s ease; }
-  .gate-card { width: 100%; max-width: 360px; text-align: center; }
-  .gate-logo { width: 40px; height: 40px; margin: 0 auto 18px; color: var(--fg); display: block; }
-  .gate h1 { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
-  .gate-card > p { color: var(--fg-muted); font-size: 13.5px; margin: 6px 0 22px; }
-  .gate-form { display: flex; flex-direction: column; gap: 10px; }
-  .gate input { height: 44px; border: 1px solid var(--border-strong); border-radius: 9px; background: var(--bg); color: var(--fg); padding: 0 14px; font-size: 14px; text-align: center; }
-  .gate input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
-  .gate button { height: 44px; border: none; border-radius: 9px; background: var(--fg); color: var(--bg); font-size: 14px; font-weight: 600; cursor: pointer; transition: opacity 0.12s ease; }
-  .gate button:hover { opacity: 0.88; }
-  .gate-err { color: var(--red-fg); font-size: 12.5px; min-height: 16px; visibility: hidden; }
-  .gate-err.show { visibility: visible; }
 
   /* Email thread */
   .thread { display: flex; flex-direction: column; gap: 12px; }
@@ -350,40 +344,31 @@
   footer { text-align: center; color: var(--fg-faint); font-size: 12px; padding: 24px; }
   footer a { color: var(--fg-muted); }
 
-  @media (max-width: 1280px) {
-    .row { grid-template-columns: 1fr 122px 200px 166px 110px 108px; }
+  @media (max-width: 1380px) {
+    .row { grid-template-columns: 1fr 188px 110px 168px 140px 96px 100px; }
     .row .col-highlight, .row.head .col-highlight-h { display: none; }
   }
-  @media (max-width: 1060px) {
-    .row { grid-template-columns: 1fr 122px 200px 110px 108px; }
+  @media (max-width: 1140px) {
+    .row { grid-template-columns: 1fr 188px 110px 168px 96px 100px; }
     .row .col-portfolio, .row.head .col-portfolio-h { display: none; }
     .viewer-sub { display: none; }
   }
-  @media (max-width: 860px) {
-    .row { grid-template-columns: 1fr 122px 108px; }
+  @media (max-width: 980px) {
+    .row { grid-template-columns: 1fr 180px 110px 100px; }
     .row .col-edu, .row.head .col-edu-h { display: none; }
     .row .col-applied, .row.head .col-applied-h { display: none; }
   }
-  @media (max-width: 560px) {
-    .row { grid-template-columns: 1fr 104px; }
+  @media (max-width: 760px) {
+    .row { grid-template-columns: 1fr 168px 100px; }
     .row .col-role, .row.head .col-role-h { display: none; }
+  }
+  @media (max-width: 540px) {
+    .row { grid-template-columns: 1fr 96px; }
+    .row .col-rating, .row.head .col-rating-h { display: none; }
   }
 </style>
 </head>
 <body>
-<div class="gate" id="gate">
-  <div class="gate-card">
-    <svg class="gate-logo" viewBox="0 0 76 65" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M37.5274 0L75.0548 65H0L37.5274 0Z" fill="currentColor"/></svg>
-    <h1>Swarm · Applicant Tracker</h1>
-    <p>This page is protected. Enter the password to continue.</p>
-    <div class="gate-form">
-      <input type="password" id="gateInput" placeholder="Password" autocomplete="current-password" aria-label="Password" />
-      <button id="gateBtn">Unlock</button>
-      <div class="gate-err" id="gateErr">Incorrect password. Try again.</div>
-    </div>
-  </div>
-</div>
-
 <header>
   <div class="brand">
     <svg class="logo" viewBox="0 0 76 65" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M37.5274 0L75.0548 65H0L37.5274 0Z" fill="currentColor"/></svg>
@@ -431,6 +416,7 @@
   <div class="table" id="table">
     <div class="row head">
       <button class="th sortable" data-sort="name">Candidate <span class="caret"><svg class="c-both" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg><svg class="c-dir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></button>
+      <button class="th sortable col-rating-h" data-sort="rating">Rating <span class="caret"><svg class="c-both" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg><svg class="c-dir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></button>
       <button class="th sortable col-role-h" data-sort="role">Role <span class="caret"><svg class="c-both" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg><svg class="c-dir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></button>
       <button class="th sortable col-edu-h" data-sort="school">Education <span class="caret"><svg class="c-both" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg><svg class="c-dir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></button>
       <div class="th col-highlight-h">Main selling point</div>
@@ -487,42 +473,6 @@
 </div>
 
 <script>
-/* ---------- Password gate (lightweight; not a substitute for server-side auth) ---------- */
-(function(){
-  const PW_HASH = "5a761c488f7bf090ffac9e0b53ef4db59d1d3932c4a44a0fe6073c4e6e3cb627";
-  const PW_FALLBACK = "c3dAcm0yMDI2"; // base64, only used if crypto.subtle is unavailable
-  const gate = document.getElementById("gate");
-  if (!gate) return;
-  if (sessionStorage.getItem("swarm_ats_auth") === "1") { gate.remove(); return; }
-  const input = document.getElementById("gateInput");
-  const btn = document.getElementById("gateBtn");
-  const err = document.getElementById("gateErr");
-  document.body.style.overflow = "hidden";
-  async function check(v){
-    try {
-      if (window.crypto && crypto.subtle) {
-        const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(v));
-        return [...new Uint8Array(buf)].map(x=>x.toString(16).padStart(2,"0")).join("") === PW_HASH;
-      }
-    } catch (e) {}
-    return v === atob(PW_FALLBACK);
-  }
-  async function unlock(){
-    if (await check(input.value)) {
-      sessionStorage.setItem("swarm_ats_auth","1");
-      document.body.style.overflow = "";
-      gate.style.opacity = "0";
-      setTimeout(()=>gate.remove(), 250);
-    } else {
-      err.classList.add("show"); input.value = ""; input.focus();
-    }
-  }
-  btn.addEventListener("click", unlock);
-  input.addEventListener("keydown", e => { if (e.key === "Enter") unlock(); });
-  input.addEventListener("input", () => err.classList.remove("show"));
-  setTimeout(() => input.focus(), 60);
-})();
-
 const CANDIDATES = [
   {
     id: "rolan",
@@ -602,7 +552,7 @@ Sean M. Fernandez` }
     name: "Pauline Ongchan",
     email: "paulineaudreyongchan@gmail.com",
     applied: "2026-06-12T08:36:32Z",
-    status: "Reviewing",
+    status: "Interview",
     highlight: "<b>$120K scholar &amp; current RBC SWE intern</b>; shipped a RAG support bot projected at $2M ARR",
     school: "UBC · Computer Science & Business, exp. May 2027",
     schoolName: "University of British Columbia",
@@ -627,7 +577,13 @@ LinkedIn: https://www.linkedin.com/in/pauline-ongchan/
 Portfolio: https://paulineongchan.vercel.app/
 
 Best,
-Pauline Ongchan` }
+Pauline Ongchan` },
+      { from: "Alexis Collado", dir: "out", date: "Jun 15, 2026", body: `Hey Pauline,\n\nThanks for applying. Are you aiming to secure this internship and complete it alongside your current one? Or are you applying for a future date?\n\nBest,\nAlexis` },
+      { from: "Pauline Ongchan", dir: "in", date: "Jun 16, 2026", body: `Hi Alexis,\n\nI was hoping to do this internship alongside my current one — it wouldn't overlap because of the time difference.\n\nI also had a few questions: I'd love to learn what a typical intern project looks like and where you see an intern contributing this term. And could you clarify whether the position is paid or unpaid?\n\nThank you, and I look forward to hearing more.\n\nBest,\nPauline` },
+      { from: "Alexis Collado", dir: "out", date: "Jun 16, 2026", body: `Hi Pauline,\n\n1. In what timezone are you looking to work for Swarm? If you're based in Vancouver it doesn't look like we have good overlap times for MNL, especially considering your other internship.\n\nBest,\nAlexis` },
+      { from: "Pauline Ongchan", dir: "in", date: "Jun 16, 2026", body: `Hi Alexis,\n\n1. I will be working in Vancouver timezone but in Manila time, so I do think there is quite a bit of overlap. I can work from 9AM to 3PM Manila time which is 6PM to 12 Midnight Vancouver time.\n\nBest,\nPauline` },
+      { from: "Alexis Collado", dir: "out", date: "Jun 16, 2026", body: `Is 12PM manila time ok with you? If yes, let's do that` },
+      { from: "Pauline Ongchan", dir: "in", date: "Jun 16, 2026", body: `Yep. Works for me as well. I've sent a google calendar invite. Looking forward to it.\n\nPauline` }
     ],
     links: [
       { type: "LinkedIn", url: "https://www.linkedin.com/in/pauline-ongchan/" },
@@ -710,7 +666,6 @@ Daniel Jan P. Medado` }
     email: "johnyumul.ph@gmail.com",
     applied: "2026-06-11T15:18:28Z",
     status: "Contacted",
-    appliedRole: "Design Engineer Intern",
     highlight: "<b>Magna Cum Laude &amp; PH100 under 30</b>; hackathon winner, ex-Dashlabs (YC W21), community builder",
     school: "Batangas State University · BS CS, Magna Cum Laude (exp. Jun 2026)",
     schoolName: "Batangas State University",
@@ -737,7 +692,13 @@ John Yumul` },
 Thanks for applying! I remember you from your talk at the Qwen meetup. Aaron and I will reach out next week for next steps.
 
 Best,
-Alexis` }
+Alexis` },
+      { from: "John Yumul", dir: "in", date: "Jun 22, 2026", body: `Hey Alexis,
+
+Checking in on this. Still very interested, let me know next steps whenever you get the chance.
+
+Best,
+John` }
     ],
     links: [
       { type: "Portfolio", url: "https://johnyumul.com" },
@@ -749,7 +710,7 @@ Alexis` }
     name: "JJ Pardo",
     email: "johnjerome.pardo@gmail.com",
     applied: "2026-06-12T06:31:41Z",
-    status: "New",
+    status: "Interview",
     highlight: "<b>Ateneo CS · catches AI hallucinations before they ship</b> — entroscope on PyPI, 3rd at BlueHacks 2026",
     school: "Ateneo de Manila University · BS Computer Science, 3rd year",
     schoolName: "Ateneo de Manila University",
@@ -784,7 +745,20 @@ LinkedIn: https://www.linkedin.com/in/john-jerome-pardo-24b5bb311/
 GitHub: github.com/Par-python
 
 Thanks,
-JJ` }
+JJ` },
+      { from: "Alexis Collado", dir: "out", date: "Jun 18, 2026", body: `Hi JJ,
+
+Thanks for applying. Are you available for an interview tomorrow at 2PM?
+
+Best,
+Alexis` },
+      { from: "JJ Pardo", dir: "in", date: "Jun 18, 2026", body: `Good day! 2pm fits for me. Thanks for the consideration!
+
+Best,
+JJ` },
+      { from: "Aaron", dir: "out", date: "Jun 22, 2026", body: `Hey JJ,
+
+Let's move you on to the next stage. Can you come over to our Makati office for the technical exam? What does your Wednesday / Thursday look like? Let's budget 4hrs for the exam itself.` }
     ],
     links: [
       { type: "Portfolio", url: "https://jjpardo.com" },
@@ -808,6 +782,7 @@ JJ` }
     role: "Full-Stack Developer",
     aiTools: ["AI-augmented dev"],
     skills: ["Full-stack", "Product development", "SaaS", "Philippines market"],
+    resumeFile: "Resume - Ian vergara.pdf",
     pitch: "Full-stack developer building real products in the Philippine market. Dash2Career (dash2career.ph) and RushPH (rush-ph.com) are live. Philosophy: AI writes the code, he builds the product — the value is in knowing what to build, recognizing bad output, and iterating until it solves a real problem. Applied mid-way through rebuilding his portfolio site because he'd rather take the shot than wait for perfection. Has published tech articles on LinkedIn. Attached resume and portfolio PDF.",
     thread: [
       { from: "Ian Vergara", dir: "in", date: "Jun 15, 2026", body: `I'm Ian Vergara, a full-stack developer who enjoys building products quickly and figuring things out without needing every detail handed to me upfront.
@@ -915,11 +890,64 @@ Bryan Reamillo` }
     ]
   },
   {
+    id: "jericho",
+    name: "Jericho Del Rosario",
+    email: "jerichodelrosario35@gmail.com",
+    applied: "2026-06-19T13:09:37Z",
+    status: "New",
+    highlight: "<b>PwC SWE who shipped a Salesforce Experience Cloud portal in 5 days</b> — presented LLM Memory Bridge at PythonAsia 2026",
+    school: "Software Engineer @ PwC Philippines",
+    schoolName: "PwC Philippines",
+    year: null,
+    role: "Software Engineer @ PwC Philippines",
+    aiTools: ["Agentforce", "AI-augmented dev", "Google Cloud Run"],
+    skills: ["Salesforce", "LWC", "Experience Cloud", "Agentforce", "Python", "Google Cloud Run", "KYC agents"],
+    pitch: "Software Engineer at PwC Philippines with a Salesforce background that spans systems design, enterprise constraints, and live demo delivery. Built a full Experience Cloud portal (LWC dashboard, Agentforce Service Bot with subagent escalation, custom Agent Workspace) in five days solo for a Salesforce Singapore pre-sales panel — from wireframe to live demo. Used AI to move faster and unblock, but made every architectural decision himself. Beyond Salesforce: presented LLM Memory Bridge at PythonAsia 2026, built Habagat (typhoon preparedness assistant on Google Cloud Run), and worked on a KYC onboarding agent on Salesforce Financial Services Cloud. Crossed paths with Aaron at hikes and eheads meetup; says Swarm is worth restructuring his schedule around.",
+    resumeFile: "Jericho_DelRosario_Resume_Swarm.pdf",
+    thread: [
+      { from: "Jericho Del Rosario", dir: "in", date: "Jun 19, 2026", body: `Hi Alexis and Aaron,
+
+I'm applying for the Software Engineer Intern role.
+
+My primary background is Salesforce engineering, but the way I build has always gone beyond one platform. I design systems, break down requirements, build with AI tools, debug what breaks, and ship working demos under real constraints.
+
+I also want to be honest about why I want to be at Swarm specifically.
+
+I crossed paths with Aaron during one of our hikes, and I also saw him speak during an eheads meetup. I've also heard from Ashley Ko — whose design work I genuinely admire — that Swarm is the kind of environment that does not let you stay comfortable. That made me more interested, not less. I'm looking for a room where the bar is high, the feedback is direct, and the work actually matters.
+
+For one piece of work I'll point at:
+
+I completed a take-home demo build for a Salesforce Singapore pre-sales panel earlier this year. The brief was open-ended. I designed and shipped a full Experience Cloud portal — information architecture, user flows, component layout — then built it: LWC dashboard, Agentforce Service Bot with subagent escalation, and a custom Agent Workspace.
+
+From wireframe to live demo in five days, alone.
+
+That project is the best example of how I build. I used AI to move faster, test ideas, and unblock myself — but I still had to make the decisions: what to keep, what to rewrite, what was wrong, and what would actually work in a live demo.
+
+Beyond that, I presented LLM Memory Bridge at PythonAsia 2026, built Habagat (a typhoon preparedness assistant deployed on Google Cloud Run), and worked on a KYC onboarding agent on Salesforce Financial Services Cloud.
+
+I know most of my experience sits in Salesforce, but I don't see that as a disadvantage. It taught me how to build for business users, work with enterprise constraints, think in systems, and ship things that need to be demoed, explained, and actually used.
+
+I'm currently full-time at PwC, but I'm flexible enough to make this work. Swarm is worth structuring my schedule around.
+
+LinkedIn: https://www.linkedin.com/in/jericho0912/
+Selected Work: https://pwc-85f-dev-ed.develop.my.site.com/
+
+Best,
+Jericho Del Rosario` },
+      { from: "Jericho Del Rosario", dir: "in", date: "Jun 19, 2026", body: `Attaching my resume here for your reference.` }
+    ],
+    links: [
+      { type: "LinkedIn", url: "https://www.linkedin.com/in/jericho0912/" },
+      { type: "Selected Work", url: "https://pwc-85f-dev-ed.develop.my.site.com/" }
+    ]
+  },
+  {
     id: "sebastian",
     name: "Sebastian Merdegia",
     email: "sebastian.merdegia@gmail.com",
     applied: "2026-06-16T01:55:07Z",
-    status: "New",
+    status: "Rejected",
+    appliedRole: "Design Engineer Intern",
     highlight: "<b>UPLB CS student building Loyalvy</b> — B2B2C loyalty SaaS field-tested with Marikina coffee shop owners",
     school: "University of the Philippines Los Baños · BS Computer Science",
     schoolName: "UP Los Baños",
@@ -954,6 +982,387 @@ Sebastian Merdegia` }
       { type: "LinkedIn", url: "https://www.linkedin.com/in/sebastian-merdegia/" },
       { type: "Portfolio (Notion)", url: "https://app.notion.com/p/Temporary-Portfolio-Page-edc4dbb9c32d4c74ac0d4e70bb39d8bd" }
     ]
+  },
+  {
+    id: "alexi",
+    name: "Alexi Cañamo",
+    email: "alexicanamo@gmail.com",
+    applied: "2026-06-26T16:31:04Z",
+    status: "Contacted",
+    highlight: "<b>Ateneo CS with production AI + fintech chops</b> — QPI/GWA calculator at 9,600+ sessions; cut NextPay manual processing 75%",
+    school: "Ateneo de Manila University · BS Computer Science",
+    schoolName: "Ateneo de Manila University",
+    year: "Undergrad",
+    role: "SWE + AI Intern @ Bytespace & NextPay",
+    aiTools: ["Claude", "AI agents", "LLM integrations"],
+    skills: ["React", "TypeScript/JavaScript", "Next.js", "Supabase/SQL", "AI agent workflows", "Fintech/payments"],
+    pitch: "BS Computer Science at Ateneo de Manila. Met Dexter and Alexis at an ASES event — applied because Swarm isn't screening out AI use. Strong problem-validation mindset, learned from One Big Match (worked months before realizing he hadn't validated deeply enough). Now ships fast, iterates on feedback. Built a QPI/GWA calculator (9,600+ sessions, 131,000+ interactions) and Enlistment Helper (500+ students, 3,000+ visits), plus Hati, a bill-splitting app (200+ downloads). Professionally: at Bytespace, he builds AI-related product features, agent workflows, memory, and integrations. At NextPay, he shipped SME money-movement and onboarding features that reduced manual processing time by 75%. Uses AI to move faster without outsourcing the thinking — focuses on knowing what to trust, question, and improve.",
+    note: "Alexis replied Jun 26: \"Thanks for applying Alexi - we'll get back to you early next week.\"",
+    resumeFile: "alexi_cv.pdf",
+    thread: [
+      { from: "Alexi Cañamo", dir: "in", date: "Jun 26, 2026", body: `Hi Aaron and Alexis,
+
+I'm Alexi Cañamo, a BS Computer Science student at Ateneo applying for the Software Engineering Intern role at Swarm.
+
+I first came across Swarm after meeting Dexter and Alexis during an event by ASES. What stood out to me about the role is that you're not screening out AI use. You're looking for someone who can use AI with judgment, communicate their thinking clearly, and take ownership of the work.
+
+That matches how I try to build. Before jumping into code, I try to understand whether the problem is real, who actually feels it, and whether it is worth solving. I learned this from One Big Match, a student events platform I worked on for months before realizing I had not validated the problem deeply enough. Since then, my process has been: validate the problem, build the smallest useful version, ship quickly, get feedback, and keep improving.
+
+I use AI tools the same way. They help me move faster, but they don't replace the thinking. The important part is knowing what to trust, what to question, and how to turn rough output into software that is reliable for users.
+
+This approach shaped my student tools at Ateneo. I built a QPI/GWA calculator that reached 9,600+ sessions and 131,000+ interactions, and Enlistment Helper, a course-planning tool used by 500+ Ateneo students across 3,000+ visits. I also built Hati, a bill-splitting app for shared expenses that reached 200+ downloads.
+
+Professionally, I've worked on production software at Bytespace and NextPay. At Bytespace, I work on AI-related product features, agent workflows, memory, and integrations. At NextPay, I shipped SME money-movement and onboarding features that helped reduce manual processing time by 75%.
+
+I want to work at Swarm because the role feels close to the kind of work I want to keep getting better at: building practical software, working with real constraints, and using AI to create tools teams actually use.
+
+Portfolio: https://alexi.life
+Projects: https://alexi.life/projects
+LinkedIn: https://linkedin.com/in/alexicanamo
+GitHub: https://github.com/itsalexi
+
+Resume attached.
+
+Best,
+Alexi Cañamo` },
+      { from: "Alexis Collado", dir: "out", date: "Jun 26, 2026", body: `Thanks for applying Alexi - we'll get back to you early next week.
+
+Best,
+Alexis` }
+    ],
+    links: [
+      { type: "Portfolio", url: "https://alexi.life" },
+      { type: "Projects", url: "https://alexi.life/projects" },
+      { type: "LinkedIn", url: "https://linkedin.com/in/alexicanamo" },
+      { type: "GitHub", url: "https://github.com/itsalexi" }
+    ]
+  },
+  {
+    id: "rk",
+    name: "Raymund Klien Mañago",
+    email: "arkimanago@gmail.com",
+    applied: "2026-06-26T03:55:49Z",
+    status: "Interview",
+    appliedRole: "Design Engineer Intern",
+    highlight: "<b>Intentional interface designer</b> — built stridetech.ph; fans of Swarm's landing page before applying",
+    school: "",
+    schoolName: "",
+    year: null,
+    role: "Design Engineer",
+    aiTools: [],
+    skills: ["UI/UX", "Web design", "Product interfaces", "Landing pages"],
+    pitch: "Applied for Design Engineer Intern. Builds interfaces that feel intentional — where every decision makes the product clearer and easier to connect with. Was a fan of Swarm's landing page before finding the job post; recognized the level of craft and wanted to work on something like it. Featured work: stridetech.ph. Portfolio at arkimanago.com. Alexis saw the portfolio and immediately scheduled an interview — RK confirmed Tuesday afternoon (2:30–6 PM).",
+    note: "Alexis invited to interview on Tue Jun 30. RK confirmed 2:30–6 PM availability.",
+    resumeFile: "Resume - Mañago.pdf",
+    thread: [
+      { from: "Raymund Klien Mañago", dir: "in", date: "Jun 26, 2026", body: `Hi Alexis,
+
+I saw your post about the Design Engineer Intern role at Swarm, and I'd love to apply.
+
+I've been a big fan of Swarm's landing page since I first saw it a while back. It genuinely felt like a hidden gem to me, especially for a Philippine-based company. I remember thinking then that I'd be happy to work on something like that, or be around the kind of team that makes things with that level of care. So when I saw this opportunity, I got really excited!
+
+The kind of work I care about most is building interfaces that feel intentional - where every decision helps the product become clearer, more useful, and easier to connect with. I'd love to contribute to Swarm in that direction, whether through landing pages, AI demos, or product interfaces.
+
+LinkedIn: https://www.linkedin.com/in/ark1tech
+Portfolio: https://arkimanago.com
+Resume: (Attached)
+
+One piece of work I'm really proud of: https://www.stridetech.ph/
+
+Thank you for your time!
+
+Best,
+Raymund Klien Mañago` },
+      { from: "Alexis Collado", dir: "out", date: "Jun 26, 2026", body: `Hi RK,
+
+Thanks for applying. I saw your portfolio and am interested in chatting further.
+
+Would you be available for an online interview on Tuesday afternoon next week?
+
+Best,
+Alexis` },
+      { from: "Raymund Klien Mañago", dir: "in", date: "Jun 26, 2026", body: `Hi Alexis,
+
+Thank you for getting back to me. I'd be happy to chat further.
+
+I'm available on Tuesday afternoon next week anytime from 2:30 PM to 6:00 PM.
+
+Please let me know what time works best for you, and I'll make sure to be available.
+
+Best,
+RK` }
+    ],
+    links: [
+      { type: "Portfolio", url: "https://arkimanago.com" },
+      { type: "LinkedIn", url: "https://www.linkedin.com/in/ark1tech" },
+      { type: "Featured Work", url: "https://www.stridetech.ph/" }
+    ]
+  },
+  {
+    id: "harley",
+    name: "Harley Van Acabal",
+    email: "acabalharleyvan@gmail.com",
+    applied: "2026-06-25T07:33:44Z",
+    status: "New",
+    appliedRole: "Design Engineer Intern",
+    highlight: "<b>IskoLab won Project of the Year at UP Cebu 2026</b> — built every step with the customer",
+    school: "University of the Philippines Cebu · BS Computer Science, 3rd year",
+    schoolName: "University of the Philippines Cebu",
+    year: "3rd year",
+    role: "CS Student · UP Cebu",
+    aiTools: [],
+    skills: ["Full-stack", "Complex scheduling", "Real-time systems", "Product development", "PMF"],
+    pitch: "Third-year Computer Science student at UP Cebu. Applied for Design Engineer Intern. Built IskoLab — combining chat, machine booking, and complex multi-effect scheduling into one platform. Won Project of the Year at UP Cebu's Project Expo 2026. Biggest selling point: built it co-creating with the customer at every step, achieving product-market fit. Philosophy: 'build products that don't suck.' Found the role through a Facebook post in App Builders PH. Portfolio at harleyvan.com.",
+    resumeFile: "harleyresume.pdf",
+    thread: [
+      { from: "Harley Van Acabal", dir: "in", date: "Jun 25, 2026", body: `Hi there,
+
+I'm Harley Van Acabal, a third-year Computer Science student at the University of the Philippines Cebu.
+
+I saw the comment on a FB post for app builders PH and it caught my attention because it aligns with my personal philosophy as well, build products that don't suck.
+
+The goal of IskoLab was to combine multiple independent things like chat, machine booking, complex scheduling with multiple side-effects, and so much more into a neat package where everything worked together in harmony. It won Project of the Year at UP Cebu's Project Expo 2026.
+
+However, I think the biggest win of all was that my team (myself and my partner) got to build something a customer actually wanted at the end — a product-market fit — because in every step we took, we brought them along with us.
+
+I've attached my resume and my linkedin profile is depyter-harleyvan. You may also check my personal website/portfolio at harleyvan.com.
+
+Best,
+Harley Van Acabal
+developer@harleyvan.com
++63 993 897 4664
+harleyvan.com` }
+    ],
+    links: [
+      { type: "Portfolio", url: "https://harleyvan.com" },
+      { type: "LinkedIn", url: "https://www.linkedin.com/in/depyter-harleyvan/" },
+      { type: "Project — IskoLab", url: "https://fablab.harleyvan.com" }
+    ]
+  },
+  {
+    id: "red",
+    name: "Red Gabriel Tagura",
+    email: "redtagura07@gmail.com",
+    applied: "2026-06-25T13:41:07Z",
+    status: "New",
+    highlight: "<b>Built HTTP/1.1 server in Zig with raw epoll</b> — asks AI to explain syscalls before writing a line",
+    school: "Polytechnic University of the Philippines Manila · BS Computer Science, 3rd year",
+    schoolName: "Polytechnic University of the Philippines",
+    year: "3rd year",
+    role: "CS Student · PUP Manila",
+    aiTools: ["AI for deep understanding, not code generation"],
+    skills: ["Zig", "C", "POSIX sockets", "Linux epoll", "Systems programming", "Low-level networking"],
+    pitch: "Third-year CS student at PUP Manila. Uses AI differently from most: asks it questions until he fully understands something, then implements himself. Built an HTTP/1.1 server in Zig using raw POSIX sockets and Linux epoll — spent hours with AI explaining syscall lifecycle, what epoll_wait blocks on, and edge vs level-triggered modes before writing a single line. Undergraduate thesis is about improving a famous runtime environment. Can tell when AI gives incomplete or subtly wrong answers and pushes back. Portfolio at redgabriel.me.",
+    resumeFile: "Tagura_Resume.pdf",
+    thread: [
+      { from: "Red Gabriel Tagura", dir: "in", date: "Jun 25, 2026", body: `Hi Swarm Team!
+
+I'm Red Gabriel Tagura, a third-year Computer Science student from PUP Manila. I'm applying for the Software Engineering Intern role at Swarm.
+
+The way I use AI is probably a bit different from most applicants. I don't use it to generate code I paste in. I ask it questions until I actually understand something, then I implement it myself. Before I built my latest project, a HTTP/1.1 server in Zig using raw POSIX sockets and Linux epoll, I spent hours asking AI to explain the syscall lifecycle, what epoll_wait actually blocks on, how edge-triggered vs level-triggered modes differ in practice. Only then did I write a single line.
+
+I ask a lot of questions before I build anything. It's because I've learned that the fastest way to build something right is to understand it first. I can tell when AI gives me something incomplete or subtly wrong, and I care enough to push back on it until it makes sense.
+
+I'm a fast learner, I work well with constraints, and I genuinely always think of what can be optimized. That's probably why my undergraduate thesis is about improving a famous runtime environment. Not because it's slow, but because I know it can be improved.
+
+Projects and Portfolio:
+github.com/Xuinnz
+redgabriel.me
+
+Red Gabriel Tagura
+09944262357 | redtagura07@gmail.com` }
+    ],
+    links: [
+      { type: "Portfolio", url: "https://redgabriel.me" },
+      { type: "GitHub", url: "https://github.com/Xuinnz" }
+    ]
+  },
+  {
+    id: "rhea",
+    name: "Rhea Claire Angela Vinluan",
+    email: "vinluan.rheaclaireangela.alejo@gmail.com",
+    applied: "2026-06-25T12:51:59Z",
+    status: "New",
+    appliedRole: "Design Engineer Intern",
+    highlight: "<b>Graduating BS IT — built her portfolio from scratch</b> with design + code",
+    school: "BS Information Technology (Graduating)",
+    schoolName: "BS IT Student (Graduating)",
+    year: "Graduating",
+    role: "BS IT Student · Web Developer",
+    aiTools: [],
+    skills: ["UI/UX design", "Web development", "User-centered design", "Vercel"],
+    pitch: "Graduating BS Information Technology student. Applied for Design Engineer Intern. Strong interest in creating user-centered digital experiences through both design and code. Built her portfolio website from scratch — designed and developed it herself. Portfolio at rhea-claire-angela-vinluan.vercel.app.",
+    resumeFile: "Vinluan - Resume (1).pdf",
+    thread: [
+      { from: "Rhea Claire Angela Vinluan", dir: "in", date: "Jun 25, 2026", body: `Good day,
+
+I am writing to express my interest in the Design Engineer Intern position at Swarm. I came across your job posting on LinkedIn and would like to submit my application for consideration.
+
+I am currently completing my Bachelor of Science in Information Technology and will be graduating this month. I have a strong interest in design and web development, particularly in creating user-centered digital experiences through both design and code.
+
+LinkedIn: https://www.linkedin.com/in/rhea-claire-angela-vinluan
+Portfolio: https://rhea-claire-angela-vinluan.vercel.app
+
+My portfolio website showcases both my design and development work, including the portfolio itself, which I personally designed and developed from scratch.
+
+Kind regards,
+Rhea Claire Angela Vinluan` }
+    ],
+    links: [
+      { type: "Portfolio", url: "https://rhea-claire-angela-vinluan.vercel.app" },
+      { type: "LinkedIn", url: "https://www.linkedin.com/in/rhea-claire-angela-vinluan" }
+    ]
+  },
+  {
+    id: "wolfie",
+    name: "Sebastian Wolfgang Canillas",
+    email: "sebastianwolfgangcanillas@gmail.com",
+    applied: "2026-06-25T15:40:35Z",
+    status: "New",
+    appliedRole: "Design Engineer Intern",
+    highlight: "<b>Self-taught programmer</b> — proudest project is his own portfolio site",
+    school: "",
+    schoolName: "",
+    year: null,
+    role: "Self-taught Developer",
+    aiTools: [],
+    skills: ["Web development", "Self-taught programming"],
+    pitch: "Design Engineer Intern applicant. Mostly self-taught in programming. Proudest project is his own portfolio site (wolfiekani.github.io). Brief application with LinkedIn and portfolio links. Resume attached.",
+    resumeFile: "Resume-Canillas.pdf",
+    thread: [
+      { from: "Sebastian Wolfgang Canillas", dir: "in", date: "Jun 25, 2026", body: `Good day!
+
+I would love to apply as a Design Engineer Intern for Swarm.
+
+Linkedin: https://www.linkedin.com/in/wolfiekani/
+Portfolio: https://www.wolfiekani.github.io
+
+One work I built and am proud of is my portfolio, as I am mostly self taught in programming.
+
+Looking forward to hearing from you!` }
+    ],
+    links: [
+      { type: "Portfolio", url: "https://www.wolfiekani.github.io" },
+      { type: "LinkedIn", url: "https://www.linkedin.com/in/wolfiekani/" }
+    ]
+  },
+  {
+    id: "kyle",
+    name: "Kyle Desmond Co",
+    email: "desmondkyleco@gmail.com",
+    applied: "2026-06-29T02:00:00Z",
+    status: "New",
+    appliedRole: "Design Engineer Intern",
+    highlight: "<b>PUP Manila CS &amp; UI/UX designer</b> — built GabayMed dual-ecosystem healthcare app at 2025 PUP Hackathon",
+    school: "Polytechnic University of the Philippines Manila · BS Computer Science",
+    schoolName: "Polytechnic University of the Philippines",
+    year: "Undergrad",
+    role: "CS Student · PUP Manila",
+    aiTools: [],
+    skills: ["UI/UX design", "Figma", "Prototyping", "User research", "Product design", "End-to-end design"],
+    pitch: "CS student at PUP Manila with a design foundation and a development toolkit. Built GabayMed — a dual-ecosystem healthcare app (patient mobile + admin dashboard) designed and prototyped from research to hi-fi at the 2025 PUP Hackathon. Cares about the full experience, from how it looks to how it works. Values understanding the problem deeply before building. Resonates with Swarm's holistic AI adoption model.",
+    resumeFile: null,
+    thread: [
+      { from: "Kyle Desmond Co", dir: "in", date: "Jun 29, 2026", body: `Dear Mr. Alexis Collado,
+
+Hi! I'm Kyle Desmond Co, a CS student currently studying at PUP Manila, a designer now navigating the field of technology—always been and still is a creative that notices the intentions behind creations.
+
+Given my background, I heavily gravitated towards UI/UX, leading me to design end-to-end products with users at the core.
+
+I really value solutions that work. Particularly, ones that really get to know the problem first. Thus, I resonate with Swarm with its holistic adoption of AI at every level, even ensuring that mid-sized companies aren't left behind in the shift.
+
+The piece of work I'm most proud of is GabayMed—a dual-ecosystem healthcare app (patient mobile + admin dashboard) I designed and prototyped from research to hi-fi at the 2025 PUP Hackathon.
+
+With design as my foundation and development as my toolkit, I care about the full experience—from how it looks to how it works.
+
+Resume: https://drive.google.com/file/d/1ntsyAbqofH8XiN9WLsm_ljsKWSizsA0h/view
+Portfolio: https://www.behance.net/gallery/251565305/Portfolio-2026
+LinkedIn: https://www.linkedin.com/in/kyle-desmond-co-8985a0281
+
+Sincerely,
+Kyle Desmond Co` }
+    ],
+    links: [
+      { type: "Portfolio", url: "https://www.behance.net/gallery/251565305/Portfolio-2026" },
+      { type: "LinkedIn", url: "https://www.linkedin.com/in/kyle-desmond-co-8985a0281" }
+    ]
+  },
+  {
+    id: "mildred",
+    name: "Mildred Relayo",
+    email: "mildredrelayo.cs@gmail.com",
+    applied: "2026-06-29T01:37:16Z",
+    status: "New",
+    appliedRole: "Design Engineer Intern",
+    highlight: "<b>Ateneo de Naga CS — motion graphics + AI automation builder</b>; Chrome extension, After Effects plugin, and AI ad pipeline",
+    school: "Ateneo de Naga University · BS Computer Science, 3rd year",
+    schoolName: "Ateneo de Naga University",
+    year: "3rd year",
+    role: "CS Student · Ateneo de Naga",
+    aiTools: ["AI automation", "Ad workflow automation"],
+    skills: ["UI/UX design", "Motion graphics", "After Effects", "Animation", "AI automation", "Chrome extension dev"],
+    pitch: "Third-year BS CS at Ateneo de Naga University. Background spans design, editing, motion graphics, animation, and AI automations/integrations. Builder's instinct: created a Chrome extension, an After Effects plugin, and an AI-powered ad workflow that analyzes top ads, generates brand-structured briefs, then auto-produces multiple ad images at scale. Shows genuine design-to-build depth across creative and technical domains.",
+    resumeFile: null,
+    thread: [
+      { from: "Mildred Relayo", dir: "in", date: "Jun 29, 2026", body: `Good day!
+
+I'm Mildred Relayo, a 3rd-year Computer Science student at Ateneo de Naga University. My background is mostly in design, editing, motion graphics, animation and currently doing AI Automations/Integrations. I am interested in UI/UX Design, Motion Graphics, Automation and Artificial Intelligence roles.
+
+I am proud to say "I built this" even if it's simple. I have created useful extension in chrome, plug-in in After Effects, and design ad workflows that analyze top ads, create it's own briefs restructured to the brand then automated to make multiple ad images to scale efficiently that actually works:
+
+https://www.tiktok.com/@lim.visuals/video/7638931975289556244
+
+Creative Portfolio: https://mildredrelayo-portfolio.pages.dev
+CV: https://drive.google.com/file/d/1Kb_wIAVjSk5ih1T4nZ4fKPsPAvj7fxet/view
+
+LinkedIn: linkedin.com/in/mildred-relayo
+
+Thank you for your time, and I look forward to the opportunity to contribute and learn more from your team!
+
+Best,
+Mildred Relayo
+BS Computer Science | Ateneo de Naga University` }
+    ],
+    links: [
+      { type: "Portfolio", url: "https://mildredrelayo-portfolio.pages.dev" },
+      { type: "LinkedIn", url: "https://www.linkedin.com/in/mildred-relayo" },
+      { type: "Demo — AI Ad Pipeline", url: "https://www.tiktok.com/@lim.visuals/video/7638931975289556244" }
+    ]
+  },
+  {
+    id: "chaz",
+    name: "Chaz Grant Borromeo",
+    email: "chazgrantborromeo@gmail.com",
+    applied: "2026-06-28T15:00:51Z",
+    status: "New",
+    appliedRole: "Design Engineer Intern",
+    highlight: "<b>Designed &amp; built own portfolio site</b> — applying for Design Engineer Intern",
+    school: "",
+    schoolName: "",
+    year: null,
+    role: "Design Engineer (applicant)",
+    aiTools: [],
+    skills: ["Web design", "Web development", "Portfolio design"],
+    pitch: "Applied for Design Engineer Intern. Designed and developed his personal portfolio site (chazgrant.me) himself. Brief application — limited additional project context provided.",
+    resumeFile: null,
+    thread: [
+      { from: "Chaz Grant Borromeo", dir: "in", date: "Jun 28, 2026", body: `Hi Alexis,
+
+I saw your post for the Design Engineer Intern role and I want to apply.
+
+LinkedIn: https://www.linkedin.com/in/chazgrant/
+Portfolio: https://chazgrant.me
+What I built: https://chazgrant.me (my personal portfolio, which I designed and developed myself)
+
+I'd love the opportunity to contribute to Swarm and learn from the team. Thank you for your time, and I look forward to hearing from you.
+
+Thanks,
+Chaz` }
+    ],
+    links: [
+      { type: "Portfolio", url: "https://chazgrant.me" },
+      { type: "LinkedIn", url: "https://www.linkedin.com/in/chazgrant/" }
+    ]
   }
 ];
 
@@ -971,7 +1380,17 @@ const THREADS = {
   ian: "19eca3dc486a133c",
   tyrone: "19ecabd19023dae3",
   bryan: "19ecad5b5b2969a6",
-  sebastian: "19ece23e7633c325"
+  sebastian: "19ece23e7633c325",
+  jericho: "19ee000842c0042a",
+  alexi: "19f04c576ac0139d",
+  rk: "19f021204adf47ef",
+  harley: "19efdb326b77d5cc",
+  red: "19eff0389dd44325",
+  rhea: "19efed69d161c416",
+  wolfie: "19eff70e468dd290",
+  kyle: "19f111bd9334fd7f",
+  mildred: "19f11063b1d7a8e6",
+  chaz: "19f0ebf91232ae24"
 };
 function gmailUrl(id) { return `https://mail.google.com/mail/?authuser=${encodeURIComponent(GMAIL_USER)}#all/${THREADS[id]}`; }
 const STATUSES = ["New", "Reviewing", "Contacted", "Interview", "Offer", "Rejected"];
@@ -1017,11 +1436,12 @@ const statusFilterEl = document.getElementById("statusFilter");
 const roleFilterEl = document.getElementById("roleFilter");
 
 // Column sorting state
-let sortState = { key: "applied", dir: "desc" };
+let sortState = { key: "rating", dir: "desc" };
 function sortValue(c, key) {
   if (key === "name") return c.name.toLowerCase();
   if (key === "applied") return new Date(c.applied).getTime();
   if (key === "status") return STATUSES.indexOf(c.status);
+  if (key === "rating") return ratingFor(c);
   if (key === "role") return roleInfo(c).full.toLowerCase();
   if (key === "school") return (c.schoolName || "￿").toLowerCase(); // unknown schools sort last
   return "";
@@ -1063,6 +1483,44 @@ function eduCell(c) {
   const badges = `${c.year ? `<span class="year-tag">${escapeHtml(c.year)}</span>` : ""}${isIvy(c.school) ? `<span class="ivy-tag" title="${escapeHtml(c.school)}">Ivy League</span>` : ""}`;
   return name + (badges ? `<div class="edu-badges">${badges}</div>` : "");
 }
+// Claude's analytical 5-star ratings (subjective triage aid, scored against each role's hiring signals)
+const RATINGS = {
+  jj: 5, pauline: 4.5, alexi: 4.5, red: 4.5, sean: 4, ian: 4, daniel: 4, john: 4, sebastian: 4,
+  rk: 4, harley: 4, rolan: 3.5, carl: 3.5, tyrone: 3.5, jericho: 3.5, mildred: 3.5, rhea: 3, kyle: 3, bryan: 2.5, wolfie: 2.5, chaz: 2.5
+};
+const RATING_NOTES = {
+  jj: "Gold standard for judgment-over-output — audits AI, runs falsification checks, ships real packages (PyPI, crates.io).",
+  pauline: "Elite résumé and judgment-first AI use; main question is bandwidth alongside her current RBC internship.",
+  alexi: "Ateneo CS with real production traction (9,600+ sessions on student tools) and hands-on AI/fintech internships — strong judgment narrative, personal connection via ASES event.",
+  red: "Standout AI philosophy for SWE: asks AI to explain syscalls before writing code; built HTTP/1.1 server in Zig with raw epoll — rare systems depth from a 3rd-year PUP student.",
+  sean: "Best 'what broke & why' story — deliberately overrode the AI's boilerplate; strong architectural judgment.",
+  ian: "Clear product judgment and ships live products; portfolio is dated but he's self-aware about it.",
+  daniel: "Scholar pedigree plus a real, maintained production app for a Petron franchise; strong all-rounder.",
+  john: "Standout résumé (Magna Cum Laude, PH100 u30, YC W21 exposure); leans product/design over deep engineering.",
+  sebastian: "Strong product instinct and in-field user validation; craft hard to fully judge with portfolio mid-rebuild.",
+  rk: "Strong taste — admired Swarm's landing page before applying; Alexis immediately moved him to interview after seeing portfolio. Intentional interface craft.",
+  harley: "UP Cebu CS, Project of the Year with IskoLab; strong PMF instinct and customer co-creation mindset. Applied for Design Eng but strengths lean more product/SWE.",
+  rolan: "Competition pedigree and a real AI-startup internship; transparent about tooling, still early in his arc.",
+  carl: "Literally paid to judge AI output, with a strong ML/CV portfolio; lighter on the 'how I think' narrative.",
+  tyrone: "Shipped a full-stack SaaS end-to-end (Stripe, OCR, auth); pragmatic, multi-tool AI use.",
+  jericho: "Strong judgment narrative and real delivery velocity (5-day Salesforce demo solo); Salesforce niche and FT-at-PwC availability are the main unknowns.",
+  rhea: "Graduating IT student with user-centered design focus; built own portfolio from scratch. Limited evidence of exceptional craft or AI-native thinking yet.",
+  bryan: "Earnest and proactive, but only basic starter projects so far — limited evidence of depth yet.",
+  wolfie: "Very sparse application; self-taught with a portfolio site as proudest project — not enough signal to assess fit.",
+  mildred: "Ateneo de Naga CS with genuine builder instinct across design + automation — Chrome extension, AE plugin, and AI ad pipeline show real range. Worth a closer look at portfolio.",
+  kyle: "PUP Manila CS with UI/UX foundation; GabayMed hackathon project shows design depth. Portfolio is Behance-only so craft signal depends on reviewing it directly.",
+  chaz: "Very brief application with portfolio and LinkedIn only — no project context beyond the portfolio site itself. Not enough signal yet to assess fit."
+};
+function ratingFor(c) { return RATINGS[c.id] ?? 0; }
+function ratingNote(c) { return RATING_NOTES[c.id] || ""; }
+function starsHtml(r) {
+  const pct = Math.max(0, Math.min(100, (r / 5) * 100));
+  return `<span class="stars" title="${r} out of 5"><span class="stars-bg">★★★★★</span><span class="stars-fg" style="width:${pct}%">★★★★★</span></span>`;
+}
+function ratingCell(c) {
+  const r = ratingFor(c);
+  return `<div class="rating-stars">${starsHtml(r)}<span class="rating-num">${r.toFixed(1)}</span></div><div class="rating-note">${escapeHtml(ratingNote(c))}</div>`;
+}
 function roleInfo(c) {
   const r = c.appliedRole || "Software Engineering Intern";
   if (/design/i.test(r)) return { full: r, short: "Design Eng", cls: "role-design" };
@@ -1103,6 +1561,7 @@ function render() {
           <div class="cand-email">${escapeHtml(c.email)}</div>
         </div>
       </div>
+      <div class="col-rating">${ratingCell(c)}</div>
       <div class="col-role">${roleCell(c)}</div>
       <div class="col-edu">${eduCell(c)}</div>
       <div class="col-highlight">${c.highlight || escapeHtml(c.role || "—")}</div>
@@ -1160,6 +1619,7 @@ function openDrawer(id) {
 
           <div class="section-label">Details</div>
           <div class="meta-stack">
+            <div class="m"><div class="k">Claude's rating</div><div class="v"><div class="rating-stars">${starsHtml(ratingFor(c))}<span class="rating-num">${ratingFor(c).toFixed(1)} / 5</span></div><div style="margin-top:6px;font-size:12.5px;color:var(--fg-muted);line-height:1.55;">${escapeHtml(ratingNote(c))}</div></div></div>
             <div class="m"><div class="k">Applied for</div><div class="v"><span class="role-pill ${roleInfo(c).cls}">${escapeHtml(roleInfo(c).full)}</span></div></div>
             <div class="m"><div class="k">Education</div><div class="v">${escapeHtml(c.school||"—")}</div></div>
             ${c.year ? `<div class="m"><div class="k">Year level</div><div class="v">${escapeHtml(c.year)}</div></div>` : ""}
